@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "761760624263",
+    "project_id": "viagens-7973d",
+    "storage_bucket": "viagens-7973d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:761760624263:android:e9049435b86f6639bbd222",
+        "android_client_info": {
+          "package_name": "br.com.technobrothersti.viagens"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwWrPynvL-PlP6dbEjoyj0MKsfesXSvA0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:761760624263:android:d51aea2d7310140dbbd222",
+        "android_client_info": {
+          "package_name": "com.example.travelfile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwWrPynvL-PlP6dbEjoyj0MKsfesXSvA0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
