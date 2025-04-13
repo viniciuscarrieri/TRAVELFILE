@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:math';
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,26 +28,31 @@ class _CadHotelPageState extends State<CadHotelPage> {
 
     if (result != null) {
       setState(() {
-        arquivosfile = result.files.map((file) => File(file.name)).toList();
+        arquivosfile = result.files.map((file) => File(file.path!)).toList();
       });
     }
   }
 
   uploadFile() async {
-    for (var file in arquivosfile) {
-      final path = 'files/${auth.currentUser!.uid}/hotel/${file.name}';
+    for (var arqFiles in arquivosfile) {
+      var name = arqFiles.path.split('/').last;
+      final path = 'files/${auth.currentUser!.uid}/hotel/$name';
+      final files = File(arqFiles.path);
+      if (!files.existsSync()) {
+        print('File does not exist');
+      }
+
       final ref = FirebaseStorage.instance.ref().child(path);
-      await ref.putFile(file);
+
+      try {
+        //await ref.putFile(files);
+        await FirebaseStorage.instance.ref(path).putFile(files);
+        print('File uploaded successfully');
+      } catch (e) {
+        print('Error uploading file: $e');
+      }
     }
   }
-  /*
-  uploadFile() async {
-    final path = 'files/${auth.currentUser!.uid}/hotel/${arquivosfile.name}';
-    final file = File(arquivosfile.path);
-
-    final ref = FirebaseStorage.instance.ref().child(path);
-    ref.putFile(file);
-  }*/
 
   @override
   Widget build(BuildContext context) {

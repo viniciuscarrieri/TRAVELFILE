@@ -5,7 +5,6 @@ import 'package:travelfile/aviao_page.dart';
 import 'package:travelfile/carro_page.dart';
 import 'package:travelfile/hotel_page.dart';
 import 'package:travelfile/ingressos_page.dart';
-import 'package:travelfile/login_page.dart';
 import 'package:travelfile/seguro_page.dart';
 import 'package:travelfile/translado_page.dart';
 
@@ -148,9 +147,7 @@ void SelectedItem(BuildContext context, item) {
       break;
     case 2:
       print("User Logged out");
-      // Navigator.of(context).pushAndRemoveUntil(
-      //     MaterialPageRoute(builder: (context) => LoginPage()),
-      //         (route) => false);
+      Navigator.of(context).pushReplacementNamed('/');
       break;
   }
 }
