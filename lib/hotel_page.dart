@@ -43,7 +43,7 @@ class _HotelPageState extends State<HotelPage> {
     print(ref);
     final Directory appDocDir = await getApplicationDocumentsDirectory();
     final String appDocPath = appDocDir.path;
-    final File tempFile = File(appDocPath + '/' + basename(url));
+    final File tempFile = File('$appDocPath/${basename(url)}');
     print(tempFile);
     try {
       await ref.writeToFile(tempFile);
