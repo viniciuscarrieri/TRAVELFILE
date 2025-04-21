@@ -5,7 +5,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
 
 class CadHotelPage extends StatefulWidget {
   const CadHotelPage({super.key});
@@ -75,7 +74,6 @@ class _CadHotelPageState extends State<CadHotelPage> {
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     return GestureDetector(
-                      onTap: () => OpenFile.open(arquivosfile[index]),
                       child: Card(
                         child: ListTile(
                           leading: returnlogo(arquivosfile[index]),

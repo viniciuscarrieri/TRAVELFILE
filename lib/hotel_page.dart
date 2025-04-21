@@ -1,16 +1,15 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase_core;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path/path.dart';
-import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
-import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HotelPage extends StatefulWidget {
   const HotelPage({super.key});
@@ -36,20 +35,19 @@ class _HotelPageState extends State<HotelPage> {
   }
 
   urlToFile(String url) async {
-    final firebase_storage.Reference ref = firebase_storage
-        .FirebaseStorage
-        .instance
-        .ref(url);
+    final ref = FirebaseStorage.instance.ref(url);
+    print("AQUI 1");
     print(ref);
     final Directory appDocDir = await getApplicationDocumentsDirectory();
     final String appDocPath = appDocDir.path;
     final File tempFile = File('$appDocPath/${basename(url)}');
+    print("AQUI 2");
     print(tempFile);
     try {
       await ref.writeToFile(tempFile);
       await tempFile.create();
       await openFile(tempFile.path);
-    } on firebase_core.FirebaseException {
+    } on FirebaseException catch (e) {
       ScaffoldMessenger.of(context as BuildContext).showSnackBar(
         SnackBar(
           content: Text(
@@ -61,21 +59,33 @@ class _HotelPageState extends State<HotelPage> {
     }
   }
 
-  openFile(String filePath) {
-    print(filePath);
-    PdfView(path: path.basename(filePath)).then((result) {
-      if (result.type == ResultType.done) {
-        print('File opened successfully');
-      } else {
-        print('Error opening file: ${result.message}');
+  static Future<void> save(String fileName) async {
+    String? directory = await FilePicker.platform.getDirectoryPath();
+
+    if (directory != null) {
+      final File file = File('$directory/$fileName');
+      if (file.existsSync()) {
+        await file.delete();
       }
+    }
+    OpenFile.open(fileName);
+  }
+
+  openFile(String filePath) async {
+    firebase_storage.Reference pdfRef = firebase_storage
+        .FirebaseStorage.instanceFor(
+      bucket: 'gs://viagens-7973d.firebasestorage.app',
+    ).refFromURL(filePath);
+    print("AQUI 3");
+    print(pdfRef);
+    OpenFile.open(pdfRef as String?).then((result) {
+      print(result.message);
+      print(result.type);
     });
     print(filePath);
   }
 
   final List<int> colorCodes = <int>[700, 500, 300];
-
-  get downloadProgress => null;
 
   @override
   Widget build(BuildContext context) {
@@ -90,13 +100,12 @@ class _HotelPageState extends State<HotelPage> {
         child: Column(
           children: [
             Expanded(
-              child: FutureBuilder<ListResult>(
+              child: FutureBuilder(
                 future: listarDocumentos(),
                 builder: (context, snapshot) {
                   return ListView.builder(
                     itemCount: HotelFiles.length,
                     itemBuilder: (context, index) {
-                      double? progress = downloadProgress[index];
                       return Card(
                         //color: Colors.blue[colorCodes[index % 3]],
                         child: GestureDetector(
@@ -107,28 +116,13 @@ class _HotelPageState extends State<HotelPage> {
                                 HotelFiles[index].name,
                                 style: TextStyle(color: Colors.black),
                               ),
-                              subtitle:
-                                  progress != null
-                                      ? LinearProgressIndicator(
-                                        value: progress,
-                                        backgroundColor: Colors.grey,
-                                        color: Colors.blue,
-                                      )
-                                      : null,
                               onTap: () {
-                                var inst = FirebaseStorage.instance;
-                                print(inst.ref(HotelFiles[index].fullPath));
-                                OpenFile.open(
-                                  inst
-                                      .ref(HotelFiles[index].fullPath)
-                                      .getDownloadURL()
-                                      .toString(),
-                                );
+                                openFile(HotelFiles[index].fullPath);
                               },
                               trailing: IconButton(
                                 icon: Icon(Icons.download, color: Colors.black),
                                 onPressed: () {
-                                  urlToFile(HotelFiles[index]);
+                                  save(HotelFiles[index]);
                                 },
                               ),
                               onLongPress: () {
@@ -196,17 +190,6 @@ class _HotelPageState extends State<HotelPage> {
 
     final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/$url.name');
-    await Dio().download(
-      ref,
-      file,
-      onReceiveProgress: (received, total) {
-        double progress = received / total;
-
-        setState(() {
-          downloadProgress[index] = progress;
-        });
-      },
-    );
 
     await url.writeToFile(File(file as String));
 
@@ -214,8 +197,4 @@ class _HotelPageState extends State<HotelPage> {
       context as BuildContext,
     ).showSnackBar(SnackBar(content: Text('Download ${url.name}')));
   }
-}
-
-extension on PdfView {
-  void then(Null Function(dynamic result) param0) {}
 }

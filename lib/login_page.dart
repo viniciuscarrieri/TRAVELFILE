@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -9,6 +10,28 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  void requestPermission() async {
+    final statusManage = await Permission.manageExternalStorage.request();
+    if (statusManage.isGranted) {
+      showAboutDialog(context) async => {
+        await Permission.manageExternalStorage.request(),
+      };
+    } else if (statusManage.isDenied) {
+      debugPrint("Permissão negada");
+    } else if (statusManage.isPermanentlyDenied) {
+      debugPrint("Permissão permanentemente negada");
+    }
+
+    final statusStorage = await Permission.storage.request();
+    if (statusStorage.isGranted) {
+      await Permission.storage.request();
+    } else if (statusStorage.isDenied) {
+      debugPrint("Permissão negada");
+    } else if (statusStorage.isPermanentlyDenied) {
+      debugPrint("Permissão permanentemente negada");
+    }
+  }
+
   String email = '';
   String password = '';
 

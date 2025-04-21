@@ -139,15 +139,36 @@ void SelectedItem(BuildContext context, item) {
   switch (item) {
     case 0:
       print("Settings");
-      // Navigator.of(context)
-      //     .push(MaterialPageRoute(builder: (context) => SettingPage()));
+      //Navigator.of(context).pushReplacementNamed('/');
       break;
     case 1:
       print("Privacy Clicked");
       break;
     case 2:
-      print("User Logged out");
-      Navigator.of(context).pushReplacementNamed('/');
+      showDialog(
+        context: context,
+        builder:
+            (context) => AlertDialog(
+              title: Text("Sair"),
+              content: Text("Deseja realmente sair?"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                    Navigator.of(context).pushReplacementNamed('/');
+                  },
+                  child: Text("Sim"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Não"),
+                ),
+              ],
+            ),
+      );
+      //Navigator.of(context).pushReplacementNamed('/');
       break;
   }
 }
