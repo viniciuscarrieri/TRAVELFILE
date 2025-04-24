@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,7 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:travelfile/pdf_api.dart';
+import 'package:travelfile/pdf_view_page.dart';
 
 class HotelPage extends StatefulWidget {
   const HotelPage({super.key});
@@ -47,7 +47,7 @@ class _HotelPageState extends State<HotelPage> {
       await ref.writeToFile(tempFile);
       await tempFile.create();
       await openFile(tempFile.path);
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       ScaffoldMessenger.of(context as BuildContext).showSnackBar(
         SnackBar(
           content: Text(
@@ -116,8 +116,14 @@ class _HotelPageState extends State<HotelPage> {
                                 HotelFiles[index].name,
                                 style: TextStyle(color: Colors.black),
                               ),
-                              onTap: () {
-                                openFile(HotelFiles[index].fullPath);
+                              onTap: () async {
+                                final ref = FirebaseStorage.instance.ref(
+                                  HotelFiles[index].fullPath,
+                                );
+                                final url = await ref.getDownloadURL();
+                                final file = await PDFAPI.loadNetwork(url);
+                                openPDF(context, file);
+                                //openFile(HotelFiles[index].fullPath);
                               },
                               trailing: IconButton(
                                 icon: Icon(Icons.download, color: Colors.black),
@@ -197,4 +203,8 @@ class _HotelPageState extends State<HotelPage> {
       context as BuildContext,
     ).showSnackBar(SnackBar(content: Text('Download ${url.name}')));
   }
+
+  void openPDF(BuildContext context, File file) => Navigator.of(
+    context,
+  ).push(MaterialPageRoute(builder: (context) => PDFViewerPage(file: file)));
 }
