@@ -41,7 +41,7 @@ class _CadHotelPageState extends State<CadHotelPage> {
         print('File does not exist');
       }
 
-      final ref = FirebaseStorage.instance.ref().child(path);
+      //final refPDF = FirebaseStorage.instance.ref().child(path);
 
       try {
         //await ref.putFile(files);

@@ -36,13 +36,9 @@ class _HotelPageState extends State<HotelPage> {
 
   urlToFile(String url) async {
     final ref = FirebaseStorage.instance.ref(url);
-    print("AQUI 1");
-    print(ref);
     final Directory appDocDir = await getApplicationDocumentsDirectory();
     final String appDocPath = appDocDir.path;
     final File tempFile = File('$appDocPath/${basename(url)}');
-    print("AQUI 2");
-    print(tempFile);
     try {
       await ref.writeToFile(tempFile);
       await tempFile.create();
@@ -190,7 +186,7 @@ class _HotelPageState extends State<HotelPage> {
       return Icon(Icons.file_present, color: Colors.grey);
     }
   }
-
+  /*
   Future downloadFile(int index, Reference url) async {
     final ref = await url.getDownloadURL();
 
@@ -202,7 +198,7 @@ class _HotelPageState extends State<HotelPage> {
     ScaffoldMessenger.of(
       context as BuildContext,
     ).showSnackBar(SnackBar(content: Text('Download ${url.name}')));
-  }
+  }*/
 
   void openPDF(BuildContext context, File file) => Navigator.of(
     context,
