@@ -13,7 +13,9 @@ class _IngressosPageState extends State<IngressosPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.small(
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).pushNamed('/cad_ingressos');
+        },
       ),
       body: const Center(child: Text('Ingressos')),
     );

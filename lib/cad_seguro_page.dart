@@ -1,20 +1,19 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
-class CadAviaoPage extends StatefulWidget {
-  const CadAviaoPage({super.key});
+class CadSeguroPage extends StatefulWidget {
+  const CadSeguroPage({super.key});
 
   @override
-  State<CadAviaoPage> createState() => _CadAviaoPageState();
+  State<CadSeguroPage> createState() => _CadSeguroPageState();
 }
 
-class _CadAviaoPageState extends State<CadAviaoPage> {
+class _CadSeguroPageState extends State<CadSeguroPage> {
   List arquivosfile = [];
 
   final auth = FirebaseAuth.instance;
@@ -36,7 +35,7 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
   uploadFile() async {
     for (var arqFiles in arquivosfile) {
       var name = arqFiles.path.split('/').last;
-      final path = 'files/${auth.currentUser!.uid}/aviao/$name';
+      final path = 'files/${auth.currentUser!.uid}/seguro/$name';
       final files = File(arqFiles.path);
       if (!files.existsSync()) {
         print('File does not exist');
@@ -57,7 +56,7 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Cadastro Aviao")),
+      appBar: AppBar(title: Text("Cadastro Seguro")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

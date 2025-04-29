@@ -13,7 +13,9 @@ class _CarroPageState extends State<CarroPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.small(
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).pushNamed('/cad_carro');
+        },
       ),
       body: const Center(child: Text('Carro')),
     );

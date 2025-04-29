@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:travelfile/app_controller.dart';
 import 'package:travelfile/aviao_page.dart';
 import 'package:travelfile/cad_aviao_page.dart';
+import 'package:travelfile/cad_carro_page.dart';
 import 'package:travelfile/cad_hotel_page.dart';
+import 'package:travelfile/cad_ingressos_page.dart';
+import 'package:travelfile/cad_seguro_page.dart';
+import 'package:travelfile/cad_transfer_page.dart';
 import 'package:travelfile/cadastro_pag.dart';
 import 'package:travelfile/carro_page.dart';
 import 'package:travelfile/home_page.dart';
@@ -46,6 +50,10 @@ class _AppWidgetState extends State<AppWidget> {
             '/seguro': (context) => SeguroPage(),
             '/cad_aviao': (context) => CadAviaoPage(),
             '/cad_hotel': (context) => CadHotelPage(),
+            '/cad_translado': (context) => CadTransferPage(),
+            '/cad_carro': (context) => CadCarroPage(),
+            '/cad_ingressos': (context) => CadIngressosPage(),
+            '/cad_seguro': (context) => CadSeguroPage(),
           },
         );
       },

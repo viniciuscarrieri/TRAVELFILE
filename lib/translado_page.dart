@@ -13,7 +13,9 @@ class _TransladoPageState extends State<TransladoPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.small(
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).pushNamed('/cad_translado');
+        },
       ),
       body: const Center(child: Text('Translado')),
     );

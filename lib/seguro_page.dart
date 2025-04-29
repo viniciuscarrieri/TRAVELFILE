@@ -13,7 +13,9 @@ class _SeguroPageState extends State<SeguroPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.small(
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).pushNamed('/cad_seguro');
+        },
       ),
       body: const Center(child: Text('Seguro')),
     );
