@@ -20,16 +20,16 @@ class AviaoPage extends StatefulWidget {
 
 class _AviaoPageState extends State<AviaoPage> {
   final auth = FirebaseAuth.instance;
-  List HotelFiles = [];
+  List AviaoFiles = [];
 
   listarDocumentos() async {
     final ref = FirebaseStorage.instance.ref().child(
-      'files/${auth.currentUser!.uid}/hotel',
+      'files/${auth.currentUser!.uid}/aviao',
     );
     final listResult = await ref.listAll();
 
     for (var item in listResult.items) {
-      HotelFiles.add(item);
+      AviaoFiles.add(item);
       print(item.name);
     }
   }
@@ -100,21 +100,21 @@ class _AviaoPageState extends State<AviaoPage> {
                 future: listarDocumentos(),
                 builder: (context, snapshot) {
                   return ListView.builder(
-                    itemCount: HotelFiles.length,
+                    itemCount: AviaoFiles.length,
                     itemBuilder: (context, index) {
                       return Card(
                         //color: Colors.blue[colorCodes[index % 3]],
                         child: GestureDetector(
                           child: Card(
                             child: ListTile(
-                              leading: returnlogo(HotelFiles[index]),
+                              leading: returnlogo(AviaoFiles[index]),
                               title: Text(
-                                HotelFiles[index].name,
+                                AviaoFiles[index].name,
                                 style: TextStyle(color: Colors.black),
                               ),
                               onTap: () async {
                                 final ref = FirebaseStorage.instance.ref(
-                                  HotelFiles[index].fullPath,
+                                  AviaoFiles[index].fullPath,
                                 );
                                 final url = await ref.getDownloadURL();
                                 final file = await PDFAPI.loadNetwork(url);
@@ -124,7 +124,7 @@ class _AviaoPageState extends State<AviaoPage> {
                               trailing: IconButton(
                                 icon: Icon(Icons.download, color: Colors.black),
                                 onPressed: () {
-                                  save(HotelFiles[index]);
+                                  save(AviaoFiles[index]);
                                 },
                               ),
                               onLongPress: () {
@@ -134,14 +134,14 @@ class _AviaoPageState extends State<AviaoPage> {
                                       (context) => AlertDialog(
                                         title: Text('Excluir arquivo'),
                                         content: Text(
-                                          'Deseja excluir o arquivo ${HotelFiles[index].name}?',
+                                          'Deseja excluir o arquivo ${AviaoFiles[index].name}?',
                                         ),
                                         actions: [
                                           TextButton(
                                             onPressed: () {
                                               FirebaseStorage.instance
                                                   .ref(
-                                                    HotelFiles[index].fullPath,
+                                                    AviaoFiles[index].fullPath,
                                                   )
                                                   .delete();
                                               Navigator.of(context).pop();
