@@ -24,13 +24,12 @@ class _SeguroPageState extends State<SeguroPage> {
 
   listarDocumentos() async {
     final ref = FirebaseStorage.instance.ref().child(
-      'files/${auth.currentUser!.uid}/hotel',
+      'files/${auth.currentUser!.uid}/seguro',
     );
     final listResult = await ref.listAll();
 
     for (var item in listResult.items) {
       SeguroFiles.add(item);
-      print(item.name);
     }
   }
 

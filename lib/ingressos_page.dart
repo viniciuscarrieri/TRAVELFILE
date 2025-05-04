@@ -24,7 +24,7 @@ class _IngressosPageState extends State<IngressosPage> {
 
   listarDocumentos() async {
     final ref = FirebaseStorage.instance.ref().child(
-      'files/${auth.currentUser!.uid}/hotel',
+      'files/${auth.currentUser!.uid}/ingressos',
     );
     final listResult = await ref.listAll();
 

@@ -89,7 +89,7 @@ class _AviaoPageState extends State<AviaoPage> {
       floatingActionButton: FloatingActionButton.small(
         child: Icon(Icons.add),
         onPressed: () {
-          Navigator.of(context).pushNamed('/cad_hotel');
+          Navigator.of(context).pushNamed('/cad_aviao');
         },
       ),
       body: Center(

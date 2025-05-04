@@ -24,7 +24,7 @@ class _TransladoPageState extends State<TransladoPage> {
 
   listarDocumentos() async {
     final ref = FirebaseStorage.instance.ref().child(
-      'files/${auth.currentUser!.uid}/translado',
+      'files/${auth.currentUser!.uid}/transfer',
     );
     final listResult = await ref.listAll();
 

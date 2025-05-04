@@ -24,7 +24,7 @@ class _CarroPageState extends State<CarroPage> {
 
   listarDocumentos() async {
     final ref = firebase_storage.FirebaseStorage.instance.ref().child(
-      'files/${auth.currentUser!.uid}/hotel',
+      'files/${auth.currentUser!.uid}/carro',
     );
     final listResult = await ref.listAll();
 

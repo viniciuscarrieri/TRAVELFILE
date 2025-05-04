@@ -33,7 +33,7 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
     }
   }
 
-  uploadFile() async {
+  uploadFile(context) async {
     for (var arqFiles in arquivosfile) {
       var name = arqFiles.path.split('/').last;
       final path = 'files/${auth.currentUser!.uid}/aviao/$name';
@@ -48,6 +48,7 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
         //await ref.putFile(files);
         await FirebaseStorage.instance.ref(path).putFile(files);
         print('File uploaded successfully');
+        Navigator.of(context).pushReplacementNamed('/home');
       } catch (e) {
         print('Error uploading file: $e');
       }
@@ -91,7 +92,7 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                uploadFile();
+                uploadFile(context);
               },
               child: Text('Enviar arquivo'),
             ),
