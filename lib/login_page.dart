@@ -112,29 +112,66 @@ class _LoginPageState extends State<LoginPage> {
                                     }
                                   else
                                     {debugPrint('Login Inválido')},
-                                  AlertDialog(
-                                    title: Text('Login Inválido'),
+                                },
+                              );
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == "invalid-email") {
+                            showDialog(
+                              context: context,
+                              builder:
+                                  (context) => AlertDialog(
+                                    title: Text("email Inválido"),
                                     content: Text(
-                                      'Verifique seu email e senha e tente novamente.',
+                                      "Verifique seu email e tente novamente!!!",
                                     ),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
                                           Navigator.of(context).pop('/');
                                         },
-                                        child: Text('OK'),
+                                        child: Text("OK"),
                                       ),
                                     ],
                                   ),
-                                },
-                              );
-                        } on FirebaseAuthException catch (e) {
-                          if (e.code == "invalid-email") {
-                            debugPrint("Digite um email válido");
+                            );
                           } else if (e.code == "invalid-credential") {
-                            debugPrint("Digite a senha Correta!");
+                            showDialog(
+                              context: context,
+                              builder:
+                                  (context) => AlertDialog(
+                                    title: Text("Senha Inválida"),
+                                    content: Text(
+                                      "Verifique sua senha e tente novamente!!!",
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop('/');
+                                        },
+                                        child: Text("OK"),
+                                      ),
+                                    ],
+                                  ),
+                            );
                           } else if (e.code == "channel-error") {
-                            debugPrint("Campo vazio!");
+                            showDialog(
+                              context: context,
+                              builder:
+                                  (context) => AlertDialog(
+                                    title: Text("Campos vazios"),
+                                    content: Text(
+                                      "Digite seu email e senha e tente novamente!!!",
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop('/');
+                                        },
+                                        child: Text("OK"),
+                                      ),
+                                    ],
+                                  ),
+                            );
                           }
                           debugPrint("Mensagem pega ${e.message}");
                           debugPrint("Código pego ${e.code}");

@@ -15,6 +15,7 @@ import 'package:travelfile/ingressos_page.dart';
 import 'package:travelfile/login_page.dart';
 import 'package:travelfile/seguro_page.dart';
 import 'package:travelfile/translado_page.dart';
+import 'package:travelfile/user_config.dart';
 
 class AppWidget extends StatefulWidget {
   const AppWidget({super.key});
@@ -54,6 +55,7 @@ class _AppWidgetState extends State<AppWidget> {
             '/cad_carro': (context) => CadCarroPage(),
             '/cad_ingressos': (context) => CadIngressosPage(),
             '/cad_seguro': (context) => CadSeguroPage(),
+            '/user_config': (context) => UserConfigPage(),
           },
         );
       },

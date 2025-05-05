@@ -53,14 +53,23 @@ class HomePageState extends State<HomePage> {
                 (context) => [
                   PopupMenuItem<int>(
                     value: 0,
-                    child: Text(
-                      "Configurações",
-                      //style: TextStyle(color: Colors.white),
+                    child: Row(
+                      children: [
+                        Icon(Icons.settings, color: Colors.black),
+                        const SizedBox(width: 7),
+                        Text("Configurações Usuário"),
+                      ],
                     ),
                   ),
                   PopupMenuItem<int>(
                     value: 1,
-                    child: Text("Politica de Privacidade"),
+                    child: Row(
+                      children: [
+                        Icon(Icons.privacy_tip, color: Colors.black),
+                        const SizedBox(width: 7),
+                        Text("Politica de Privacidade"),
+                      ],
+                    ),
                   ),
                   PopupMenuItem<int>(
                     value: 2,
@@ -138,8 +147,8 @@ class CustomSwitch extends StatelessWidget {
 void SelectedItem(BuildContext context, item) {
   switch (item) {
     case 0:
-      print("Settings");
-      //Navigator.of(context).pushReplacementNamed('/');
+      print("Configurações Usuário");
+      Navigator.of(context).pushNamed('/user_config');
       break;
     case 1:
       print("Privacy Clicked");
