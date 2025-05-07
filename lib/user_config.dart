@@ -17,92 +17,86 @@ class _UserConfigPageState extends State<UserConfigPage> {
   String name = '';
   String phone = '';
 
-  @override
   Widget _body() {
     return SingleChildScrollView(
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(height: 10),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: TextEditingController(
-                          text: uid = '${auth.currentUser!.uid}',
+      child: Padding(
+        padding: const EdgeInsets.only(top: 15),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: TextEditingController(
+                        text: uid = '${auth.currentUser!.uid}',
+                      ),
+                      enableInteractiveSelection: false,
+                      decoration: InputDecoration(
+                        labelText: 'ID do Usuário',
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(
+                          Icons.content_copy,
+                          color: Colors.black,
                         ),
-                        enableInteractiveSelection: false,
-                        decoration: InputDecoration(
-                          labelText: 'ID do Usuário',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(
-                            Icons.content_copy,
-                            color: Colors.black,
-                          ),
-                        ),
-                        onTap: () {
-                          Clipboard.setData(ClipboardData(text: uid));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'ID copiado para a área de transferência',
-                              ),
+                      ),
+                      onTap: () {
+                        Clipboard.setData(ClipboardData(text: uid));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'ID copiado para a área de transferência',
                             ),
-                          );
-                        },
+                          ),
+                        );
+                      },
+                    ),
+                    Container(height: 10),
+                    TextField(
+                      controller: TextEditingController(
+                        text: '${auth.currentUser!.displayName}',
                       ),
-                      Container(height: 10),
-                      TextField(
-                        controller: TextEditingController(
-                          text: '${auth.currentUser!.displayName}',
-                        ),
-                        decoration: InputDecoration(
-                          labelText: 'Nome do Usuário',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (text) {
-                          name = text;
-                        },
+                      decoration: InputDecoration(
+                        labelText: 'Nome do Usuário',
+                        border: OutlineInputBorder(),
                       ),
-                      Container(height: 10),
-                      TextField(
-                        controller: TextEditingController(
-                          text: '${auth.currentUser!.email}',
-                        ),
-                        decoration: InputDecoration(
-                          labelText: 'E-mail',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (text) {
-                          email = text;
-                        },
+                      onChanged: (text) {
+                        name = text;
+                      },
+                    ),
+                    Container(height: 10),
+                    TextField(
+                      controller: TextEditingController(
+                        text: '${auth.currentUser!.email}',
                       ),
-                      Container(height: 10),
-                      TextField(
-                        controller: TextEditingController(
-                          text: '${auth.currentUser!.phoneNumber}',
-                        ),
-                        decoration: InputDecoration(
-                          labelText: 'Telefone',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (text) {
-                          phone = text;
-                        },
-                      ), // Add more settings options here
-                    ],
-                  ),
+                      decoration: InputDecoration(
+                        labelText: 'E-mail',
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (text) {
+                        email = text;
+                      },
+                    ),
+                    Container(height: 10),
+                    TextField(
+                      controller: TextEditingController(
+                        text: '${auth.currentUser!.phoneNumber}',
+                      ),
+                      decoration: InputDecoration(
+                        labelText: 'Telefone',
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (text) {
+                        phone = text;
+                      },
+                    ), // Add more settings options here
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

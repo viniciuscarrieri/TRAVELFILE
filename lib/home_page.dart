@@ -65,6 +65,16 @@ class HomePageState extends State<HomePage> {
                     value: 1,
                     child: Row(
                       children: [
+                        Icon(Icons.key, color: Colors.black),
+                        const SizedBox(width: 7),
+                        Text("Trocar Senha"),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<int>(
+                    value: 2,
+                    child: Row(
+                      children: [
                         Icon(Icons.privacy_tip, color: Colors.black),
                         const SizedBox(width: 7),
                         Text("Politica de Privacidade"),
@@ -72,7 +82,7 @@ class HomePageState extends State<HomePage> {
                     ),
                   ),
                   PopupMenuItem<int>(
-                    value: 2,
+                    value: 3,
                     child: Row(
                       children: [
                         Icon(Icons.logout, color: Colors.black),
@@ -151,9 +161,13 @@ void SelectedItem(BuildContext context, item) {
       Navigator.of(context).pushNamed('/user_config');
       break;
     case 1:
-      print("Privacy Clicked");
+      print("Trocar Senha");
+      Navigator.of(context).pushNamed('/change_password');
       break;
     case 2:
+      print("Privacy Clicked");
+      break;
+    case 3:
       showDialog(
         context: context,
         builder:

@@ -9,6 +9,7 @@ import 'package:travelfile/cad_seguro_page.dart';
 import 'package:travelfile/cad_transfer_page.dart';
 import 'package:travelfile/cadastro_pag.dart';
 import 'package:travelfile/carro_page.dart';
+import 'package:travelfile/change_password.dart';
 import 'package:travelfile/home_page.dart';
 import 'package:travelfile/hotel_page.dart';
 import 'package:travelfile/ingressos_page.dart';
@@ -56,6 +57,7 @@ class _AppWidgetState extends State<AppWidget> {
             '/cad_ingressos': (context) => CadIngressosPage(),
             '/cad_seguro': (context) => CadSeguroPage(),
             '/user_config': (context) => UserConfigPage(),
+            '/change_password': (context) => ChangePasswordPage(),
           },
         );
       },
