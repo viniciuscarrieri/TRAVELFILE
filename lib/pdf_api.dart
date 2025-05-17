@@ -2,6 +2,7 @@ import "dart:io";
 
 import "package:file_picker/file_picker.dart";
 import "package:firebase_storage/firebase_storage.dart";
+import "package:flutter/material.dart";
 import "package:http/http.dart" as http;
 import "package:path/path.dart";
 import "package:path_provider/path_provider.dart";
@@ -32,7 +33,19 @@ class PDFAPI {
 
       return _storeFile(url, bytes!);
     } catch (e) {
-      print(e);
+      showDialog(context) async {
+        return AlertDialog(
+          title: Text('Erro ao carregar o PDF'),
+          content: Text(e.toString()),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('OK'),
+            ),
+          ],
+        );
+      }
+
       return null!;
     }
   }
