@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -39,7 +38,15 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
       final path = 'files/${auth.currentUser!.uid}/aviao/$name';
       final files = File(arqFiles.path);
       if (!files.existsSync()) {
-        print('File does not exist');
+        showDialog(
+          context: context,
+          builder:
+              (context) => AlertDialog(
+                title: Text("Arquivo Inválido"),
+                content: Text("Não exite nenhum Arquivo!!!"),
+                actions: [TextButton(onPressed: () {}, child: Text("OK"))],
+              ),
+        );
       }
 
       //final refPDF = FirebaseStorage.instance.ref().child(path);
@@ -47,10 +54,26 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
       try {
         //await ref.putFile(files);
         await FirebaseStorage.instance.ref(path).putFile(files);
-        print('File uploaded successfully');
+        showDialog(
+          context: context,
+          builder:
+              (context) => AlertDialog(
+                title: Text("Arquivo Enviado"),
+                content: Text("Arquivo enviado com sucesso!!!"),
+                actions: [TextButton(onPressed: () {}, child: Text("OK"))],
+              ),
+        );
         Navigator.of(context).pushReplacementNamed('/home');
       } catch (e) {
-        print('Error uploading file: $e');
+        showDialog(
+          context: context,
+          builder:
+              (context) => AlertDialog(
+                title: Text("Erro Upload"),
+                content: Text("Erro ao Enviar o Arquivo: $e!!!"),
+                actions: [TextButton(onPressed: () {}, child: Text("OK"))],
+              ),
+        );
       }
     }
   }

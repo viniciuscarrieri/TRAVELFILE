@@ -72,13 +72,7 @@ class _AviaoPageState extends State<AviaoPage> {
         .FirebaseStorage.instanceFor(
       bucket: 'gs://viagens-7973d.firebasestorage.app',
     ).refFromURL(filePath);
-    print("AQUI 3");
-    print(pdfRef);
-    OpenFile.open(pdfRef as String?).then((result) {
-      print(result.message);
-      print(result.type);
-    });
-    print(filePath);
+    OpenFile.open(pdfRef as String?).then((result) {});
   }
 
   final List<int> colorCodes = <int>[700, 500, 300];
@@ -186,19 +180,6 @@ class _AviaoPageState extends State<AviaoPage> {
       return Icon(Icons.file_present, color: Colors.grey);
     }
   }
-  /*
-  Future downloadFile(int index, Reference url) async {
-    final ref = await url.getDownloadURL();
-
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/$url.name');
-
-    await url.writeToFile(File(file as String));
-
-    ScaffoldMessenger.of(
-      context as BuildContext,
-    ).showSnackBar(SnackBar(content: Text('Download ${url.name}')));
-  }*/
 
   void openPDF(BuildContext context, File file) => Navigator.of(
     context,
