@@ -1,9 +1,6 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_local_network_ios/flutter_local_network_ios.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,21 +11,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _flutterLocalNetworkIosPlugin = FlutterLocalNetworkIos();
-
   void requestPermission() async {
-    bool? result = await _flutterLocalNetworkIosPlugin.requestAuthorization();
-    print("result  $result");
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _flutterLocalNetworkIosPlugin.getPlatformVersion() ??
-          'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
     final statusManage = await Permission.manageExternalStorage.request();
     if (statusManage.isGranted) {
       // ignore: unused_element
