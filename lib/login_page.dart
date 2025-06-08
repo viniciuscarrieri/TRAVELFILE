@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_local_network_ios/flutter_local_network_ios.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class LoginPage extends StatefulWidget {
@@ -10,9 +14,24 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _flutterLocalNetworkIosPlugin = FlutterLocalNetworkIos();
+
   void requestPermission() async {
+    bool? result = await _flutterLocalNetworkIosPlugin.requestAuthorization();
+    print("result  $result");
+    String platformVersion;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    // We also handle the message potentially returning null.
+    try {
+      platformVersion =
+          await _flutterLocalNetworkIosPlugin.getPlatformVersion() ??
+          'Unknown platform version';
+    } on PlatformException {
+      platformVersion = 'Failed to get platform version.';
+    }
     final statusManage = await Permission.manageExternalStorage.request();
     if (statusManage.isGranted) {
+      // ignore: unused_element
       showAboutDialog(context) async => {
         await Permission.manageExternalStorage.request(),
       };
@@ -21,13 +40,36 @@ class _LoginPageState extends State<LoginPage> {
     } else if (statusManage.isPermanentlyDenied) {
       debugPrint("Permissão permanentemente negada");
     }
-
     final statusStorage = await Permission.storage.request();
     if (statusStorage.isGranted) {
       await Permission.storage.request();
     } else if (statusStorage.isDenied) {
       debugPrint("Permissão negada");
     } else if (statusStorage.isPermanentlyDenied) {
+      debugPrint("Permissão permanentemente negada");
+    }
+    final statusCamera = await Permission.camera.request();
+    if (statusCamera.isGranted) {
+      await Permission.camera.request();
+    } else if (statusCamera.isDenied) {
+      debugPrint("Permissão negada");
+    } else if (statusCamera.isPermanentlyDenied) {
+      debugPrint("Permissão permanentemente negada");
+    }
+    final statusLocation = await Permission.location.request();
+    if (statusLocation.isGranted) {
+      await Permission.location.request();
+    } else if (statusLocation.isDenied) {
+      debugPrint("Permissão negada");
+    } else if (statusLocation.isPermanentlyDenied) {
+      debugPrint("Permissão permanentemente negada");
+    }
+    final statusNotification = await Permission.notification.request();
+    if (statusNotification.isGranted) {
+      await Permission.notification.request();
+    } else if (statusNotification.isDenied) {
+      debugPrint("Permissão negada");
+    } else if (statusNotification.isPermanentlyDenied) {
       debugPrint("Permissão permanentemente negada");
     }
   }
@@ -88,7 +130,9 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pushReplacementNamed('/cadastro');
+                      Navigator.of(
+                        context,
+                      ).pushReplacementNamed('/cad_metodo_login');
                     },
                     child: Text('Cadastrar'),
                   ),
@@ -103,10 +147,12 @@ class _LoginPageState extends State<LoginPage> {
                                 password: password,
                               )
                               .then(
+                                // ignore: non_constant_identifier_names
                                 (UserCredential) => {
                                   if (UserCredential.user != null)
                                     {
                                       Navigator.of(
+                                        // ignore: use_build_context_synchronously
                                         context,
                                       ).pushReplacementNamed('/home'),
                                     }
@@ -117,6 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                         } on FirebaseAuthException catch (e) {
                           if (e.code == "invalid-email") {
                             showDialog(
+                              // ignore: use_build_context_synchronously
                               context: context,
                               builder:
                                   (context) => AlertDialog(
@@ -136,6 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                             );
                           } else if (e.code == "invalid-credential") {
                             showDialog(
+                              // ignore: use_build_context_synchronously
                               context: context,
                               builder:
                                   (context) => AlertDialog(
@@ -155,6 +203,7 @@ class _LoginPageState extends State<LoginPage> {
                             );
                           } else if (e.code == "channel-error") {
                             showDialog(
+                              // ignore: use_build_context_synchronously
                               context: context,
                               builder:
                                   (context) => AlertDialog(

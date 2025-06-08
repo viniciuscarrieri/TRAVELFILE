@@ -18,6 +18,7 @@ class _CadHotelPageState extends State<CadHotelPage> {
 
   final auth = FirebaseAuth.instance;
 
+  // ignore: strict_top_level_inference
   selectFile() async {
     var result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
@@ -32,6 +33,7 @@ class _CadHotelPageState extends State<CadHotelPage> {
     }
   }
 
+  // ignore: strict_top_level_inference
   uploadFile() async {
     for (var arqFiles in arquivosfile) {
       var name = arqFiles.path.split('/').last;

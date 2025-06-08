@@ -2,6 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Allow Flutter tools to connect to your application</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_dartobservatory._tcp</string>
+		<string>_dartVmService._tcp</string>
+		<string>_preflight_check._tcp</string>
+		<string>Travelfile._http._tcp</string>
+	</array>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

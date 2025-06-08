@@ -15,24 +15,25 @@ class PDFAPI {
     return _storeFile(url, bytes);
   }
 
-  static Future<File> pickFile() async {
+  static Future<File?> pickFile() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
     );
 
-    if (result == null) return null!;
+    if (result == null) return null;
 
     return File(result.paths.first!);
   }
 
-  static Future<File> loadFirebase(String url) async {
+  static Future<File?> loadFirebase(String url) async {
     try {
       final refPDF = FirebaseStorage.instance.ref().child(url);
       final bytes = await refPDF.getData();
 
       return _storeFile(url, bytes!);
     } catch (e) {
+      // ignore: unused_element
       showDialog(context) async {
         return AlertDialog(
           title: Text('Erro ao carregar o PDF'),
@@ -46,7 +47,8 @@ class PDFAPI {
         );
       }
 
-      return null!;
+      // ignore: null_check_always_fails
+      return null;
     }
   }
 

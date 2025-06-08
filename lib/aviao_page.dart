@@ -20,8 +20,10 @@ class AviaoPage extends StatefulWidget {
 
 class _AviaoPageState extends State<AviaoPage> {
   final auth = FirebaseAuth.instance;
+  // ignore: non_constant_identifier_names
   List AviaoFiles = [];
 
+  // ignore: strict_top_level_inference
   listarDocumentos() async {
     final ref = FirebaseStorage.instance.ref().child(
       'files/${auth.currentUser!.uid}/aviao',
@@ -34,6 +36,7 @@ class _AviaoPageState extends State<AviaoPage> {
     }
   }
 
+  // ignore: strict_top_level_inference
   urlToFile(String url) async {
     final ref = FirebaseStorage.instance.ref(url);
     final Directory appDocDir = await getApplicationDocumentsDirectory();
@@ -67,6 +70,7 @@ class _AviaoPageState extends State<AviaoPage> {
     OpenFile.open(fileName);
   }
 
+  // ignore: strict_top_level_inference
   openFile(String filePath) async {
     firebase_storage.Reference pdfRef = firebase_storage
         .FirebaseStorage.instanceFor(
@@ -112,6 +116,7 @@ class _AviaoPageState extends State<AviaoPage> {
                                 );
                                 final url = await ref.getDownloadURL();
                                 final file = await PDFAPI.loadNetwork(url);
+                                // ignore: use_build_context_synchronously
                                 openPDF(context, file);
                                 //openFile(HotelFiles[index].fullPath);
                               },
@@ -168,6 +173,7 @@ class _AviaoPageState extends State<AviaoPage> {
     );
   }
 
+  // ignore: strict_top_level_inference
   returnlogo(file) {
     var ex = extension(file.name);
     if (ex == '.jpg') {

@@ -1,3 +1,4 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:travelfile/app_widget.dart';

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -95,6 +96,51 @@ class _UserConfigPageState extends State<UserConfigPage> {
                   ],
                 ),
               ),
+            ),
+            SizedBox(height: 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacementNamed('/');
+                  },
+                  child: Text('Voltar'),
+                ),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () async {
+                    // ignore: deprecated_member_use
+                    auth.currentUser!.updateEmail(email);
+                    auth.currentUser!.updateProfile(displayName: name);
+                    await FirebaseAuth.instance.verifyPhoneNumber(
+                      phoneNumber: phone,
+                      verificationCompleted:
+                          (PhoneAuthCredential credential) {},
+                      verificationFailed: (FirebaseAuthException e) {},
+                      codeSent: (String verificationId, int? resendToken) {},
+                      codeAutoRetrievalTimeout: (String verificationId) {},
+                    );
+
+                    await auth.currentUser!.reload();
+                    FirebaseFirestore.instance
+                        .collection('usuarios')
+                        .doc(FirebaseAuth.instance.currentUser!.uid)
+                        .set({
+                          'uid': auth.currentUser!.uid,
+                          'nome': name,
+                          'email': email,
+                          'dataUpdate': DateTime.now(),
+                          'telefone': phone,
+                        })
+                        .then(
+                          (value) =>
+                              debugPrint("Dados atualizados com sucesso"),
+                        );
+                  },
+                  child: Text('Salvar'),
+                ),
+              ],
             ),
           ],
         ),

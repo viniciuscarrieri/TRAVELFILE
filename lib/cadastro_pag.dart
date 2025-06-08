@@ -115,6 +115,7 @@ class _CadastroPageState extends State<CadastroPage> {
                                       )
                                       .set({
                                         'uid': auth.currentUser!.uid,
+                                        'LoginMetodo': 'Email-Senha',
                                         'nome': nome,
                                         'email': email,
                                         'senha': password,

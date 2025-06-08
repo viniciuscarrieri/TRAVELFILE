@@ -5,6 +5,7 @@ import 'package:travelfile/cad_aviao_page.dart';
 import 'package:travelfile/cad_carro_page.dart';
 import 'package:travelfile/cad_hotel_page.dart';
 import 'package:travelfile/cad_ingressos_page.dart';
+import 'package:travelfile/cad_metodo_login.dart';
 import 'package:travelfile/cad_seguro_page.dart';
 import 'package:travelfile/cad_transfer_page.dart';
 import 'package:travelfile/cadastro_pag.dart';
@@ -43,6 +44,7 @@ class _AppWidgetState extends State<AppWidget> {
           routes: {
             '/': (context) => LoginPage(),
             '/home': (context) => HomePage(),
+            '/cad_metodo_login': (context) => CadMetodoLogin(),
             '/cadastro': (context) => CadastroPage(),
             '/aviao': (context) => AviaoPage(),
             '/hotel': (context) => HotelPage(),

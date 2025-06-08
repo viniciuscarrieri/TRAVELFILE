@@ -18,6 +18,7 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
 
   final auth = FirebaseAuth.instance;
 
+  // ignore: strict_top_level_inference
   selectFile() async {
     var result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
@@ -32,6 +33,7 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
     }
   }
 
+  // ignore: strict_top_level_inference
   uploadFile(context) async {
     for (var arqFiles in arquivosfile) {
       var name = arqFiles.path.split('/').last;
@@ -125,6 +127,7 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
     );
   }
 
+  // ignore: strict_top_level_inference
   returnlogo(file) {
     var ex = extension(file.path);
     if (ex == '.jpg') {
