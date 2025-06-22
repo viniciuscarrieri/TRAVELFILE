@@ -1,6 +1,7 @@
-import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_local_network_ios/flutter_local_network_ios.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class LoginPage extends StatefulWidget {
@@ -11,9 +12,130 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  // ignore: unused_field
+  String _platformVersion = 'Unknown';
+  final _flutterLocalNetworkIosPlugin = FlutterLocalNetworkIos();
+
+  @override
+  void initState() {
+    super.initState();
+    //_checkAndRequestPermissions();
+    _checkAndRequestNetworkPermission();
+    _initPlatformState();
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> _initPlatformState() async {
+    // ignore: unused_element
+    bool? result = await _flutterLocalNetworkIosPlugin.requestAuthorization();
+    print("result  $result");
+    String platformVersion;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    // We also handle the message potentially returning null.
+    try {
+      platformVersion =
+          await _flutterLocalNetworkIosPlugin.getPlatformVersion() ??
+          'Unknown platform version';
+    } on PlatformException {
+      platformVersion = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _platformVersion = platformVersion;
+    });
+    print("$platformVersion");
+  }
+
+  // ignore: unused_element
+  Future<void> _checkAndRequestPermissions() async {
+    final status = await Permission.manageExternalStorage.status;
+    if (status.isGranted) {
+      await Permission.manageExternalStorage.request();
+      // Permissão já concedida, você pode acessar o armazenamento externo
+      print('Permissão de armazenamento externo já concedida');
+    } else {
+      await _requestStoragePermission();
+    }
+  }
+
+  Future<void> _requestStoragePermission() async {
+    final status = await Permission.manageExternalStorage.request();
+    if (status.isGranted) {
+      await Permission.manageExternalStorage.request();
+      // Permissão concedida, você pode acessar o armazenamento externo
+      print('Permissão de armazenamento externo concedida');
+    } else if (status.isDenied) {
+      // ignore: unused_element
+      showAboutDialog(context) async => {
+        await Permission.manageExternalStorage.request(),
+        await Permission.storage.request(),
+      };
+      // Permissão negada, informe o usuário
+      print('Permissão de armazenamento externo negada');
+    } else if (status.isPermanentlyDenied) {
+      // ignore: unused_element
+      showAboutDialog(context) async => {
+        await Permission.manageExternalStorage.request(),
+        await Permission.storage.request(),
+      };
+      // Permissão permanentemente negada, abra as configurações
+      print('Permissão de armazenamento externo permanentemente negada');
+    }
+  }
+
+  // ignore: unused_element
+  Future<void> _checkAndRequestNetworkPermission() async {
+    final status = await Permission.phone.status; // Ou Permission.location
+    if (status.isGranted) {
+      await Permission.phone.request(); // Ou Permission.location
+      await Permission.locationWhenInUse.request();
+      // Permissão já concedida, você pode acessar a rede
+      print('Permissão de rede já concedida');
+    } else {
+      // Permissão não concedida, solicite-a
+      await _requestNetworkPermission();
+    }
+  }
+
+  Future<void> _requestNetworkPermission() async {
+    // ignore: unused_element
+    showAboutDialog(context) async => {
+      await Permission.phone.request(), // Ou Permission.location
+      await Permission.locationWhenInUse.request(),
+    }; // Ou Permission.location
+    final status = await Permission.phone.request();
+    if (status.isGranted) {
+      await Permission.phone.request(); // Ou Permission.location
+      await Permission.locationWhenInUse.request();
+      // Permissão concedida, você pode acessar a rede
+      print('Permissão de rede concedida');
+    } else if (status.isDenied) {
+      // ignore: unused_element
+      showAboutDialog(context) async => {
+        await Permission.phone.request(), // Ou Permission.location
+        await Permission.locationWhenInUse.request(),
+      };
+      // Permissão negada, informe o usuário
+      print('Permissão de rede negada');
+    } else if (status.isPermanentlyDenied) {
+      // ignore: unused_element
+      showAboutDialog(context) async => {
+        await Permission.phone.request(), // Ou Permission.location
+        await Permission.locationWhenInUse.request(),
+      };
+      // Permissão permanentemente negada, abra as configurações
+      print('Permissão de rede permanentemente negada');
+    }
+  }
+
   void requestPermission() async {
     final statusManage = await Permission.manageExternalStorage.request();
-    if (statusManage.isGranted) {
+    if (!statusManage.isGranted) {
       // ignore: unused_element
       showAboutDialog(context) async => {
         await Permission.manageExternalStorage.request(),
@@ -23,37 +145,85 @@ class _LoginPageState extends State<LoginPage> {
     } else if (statusManage.isPermanentlyDenied) {
       debugPrint("Permissão permanentemente negada");
     }
+
     final statusStorage = await Permission.storage.request();
-    if (statusStorage.isGranted) {
+    if (!statusStorage.isGranted) {
+      // ignore: unused_element
+      showAboutDialog(context) async => {
+        await Permission.storage.request(),
+        debugPrint("Permissão de armazenamento concedida"),
+      };
       await Permission.storage.request();
     } else if (statusStorage.isDenied) {
+      // ignore: unused_element
+      showAboutDialog(context) async => {
+        await Permission.manageExternalStorage.request(),
+      };
       debugPrint("Permissão negada");
     } else if (statusStorage.isPermanentlyDenied) {
       debugPrint("Permissão permanentemente negada");
     }
+
     final statusCamera = await Permission.camera.request();
     if (statusCamera.isGranted) {
-      await Permission.camera.request();
+      // ignore: unused_element
+      showAboutDialog(context) async => {
+        await Permission.camera.request(),
+        debugPrint("Permissão de armazenamento concedida"),
+      };
     } else if (statusCamera.isDenied) {
       debugPrint("Permissão negada");
     } else if (statusCamera.isPermanentlyDenied) {
       debugPrint("Permissão permanentemente negada");
     }
+
     final statusLocation = await Permission.location.request();
     if (statusLocation.isGranted) {
+      // ignore: unused_element
+      showAboutDialog(context) async => {
+        await Permission.location.request(),
+        debugPrint("Permissão de armazenamento concedida"),
+      };
       await Permission.location.request();
     } else if (statusLocation.isDenied) {
       debugPrint("Permissão negada");
     } else if (statusLocation.isPermanentlyDenied) {
       debugPrint("Permissão permanentemente negada");
     }
+
     final statusNotification = await Permission.notification.request();
     if (statusNotification.isGranted) {
+      // ignore: unused_element
+      showAboutDialog(context) async => {
+        await Permission.notification.request(),
+        debugPrint("Permissão de armazenamento concedida"),
+      };
       await Permission.notification.request();
     } else if (statusNotification.isDenied) {
       debugPrint("Permissão negada");
     } else if (statusNotification.isPermanentlyDenied) {
       debugPrint("Permissão permanentemente negada");
+    }
+
+    final statusRede = await Permission.locationWhenInUse.status;
+    if (statusRede.isGranted) {
+      // ignore: unused_element
+      showAboutDialog(context) async => {
+        await Permission.locationWhenInUse.request(),
+        debugPrint("Permissão de armazenamento concedida"),
+      };
+      await Permission.locationWhenInUse.request();
+    } else if (statusRede.isDenied) {
+      // ignore: unused_element
+      showAboutDialog(context) async => {
+        await Permission.locationWhenInUse.request(),
+        debugPrint("Permissão de armazenamento concedida"),
+      };
+      debugPrint("Permissão de rede negada");
+    } else if (statusRede.isPermanentlyDenied) {
+      // ignore: avoid_print
+      // Permissão permanentemente negada
+      // Leve o usuário para as configurações do dispositivo
     }
   }
 
