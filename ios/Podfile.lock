@@ -1327,10 +1327,6 @@ PODS:
     - GoogleUtilities/Environment (~> 8.1)
     - GTMSessionFetcher/Core (< 5.0, >= 3.4)
   - Flutter (1.0.0)
-  - flutter_local_network_ios (0.0.1):
-    - Flutter
-  - flutter_local_notifications (0.0.1):
-    - Flutter
   - flutter_pdfview (1.0.2):
     - Flutter
   - google_sign_in_ios (0.0.1):
@@ -1507,8 +1503,6 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
-  - flutter_local_network_ios (from `.symlinks/plugins/flutter_local_network_ios/ios`)
-  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_pdfview (from `.symlinks/plugins/flutter_pdfview/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/darwin`)
   - local_auth_darwin (from `.symlinks/plugins/local_auth_darwin/darwin`)
@@ -1571,10 +1565,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
     :path: Flutter
-  flutter_local_network_ios:
-    :path: ".symlinks/plugins/flutter_local_network_ios/ios"
-  flutter_local_notifications:
-    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_pdfview:
     :path: ".symlinks/plugins/flutter_pdfview/ios"
   google_sign_in_ios:
@@ -1622,8 +1612,6 @@ SPEC CHECKSUMS:
   FirebaseSharedSwift: bdd5c8674c4712a98e70287c936bc5cca5d640f6
   FirebaseStorage: 2a3e5402a565e06e121308dadfe0626976fd6b45
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_local_network_ios: 724f51b7d09e43a13d57801900700eed721239bb
-  flutter_local_notifications: a5a732f069baa862e728d839dd2ebb904737effb
   flutter_pdfview: 32bf27bda6fd85b9dd2c09628a824df5081246cf
   google_sign_in_ios: b48bb9af78576358a168361173155596c845f0b9
   GoogleSignIn: ce8c89bb9b37fb624b92e7514cc67335d1e277e4

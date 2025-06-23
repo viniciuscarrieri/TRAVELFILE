@@ -15,6 +15,7 @@ import 'package:travelfile/home_page.dart';
 import 'package:travelfile/hotel_page.dart';
 import 'package:travelfile/ingressos_page.dart';
 import 'package:travelfile/login_page.dart';
+import 'package:travelfile/permission.dart';
 import 'package:travelfile/seguro_page.dart';
 import 'package:travelfile/translado_page.dart';
 import 'package:travelfile/user_config.dart';
@@ -40,7 +41,7 @@ class _AppWidgetState extends State<AppWidget> {
                     ? Brightness.dark
                     : Brightness.light,
           ),
-          initialRoute: '/',
+          initialRoute: '/permission',
           routes: {
             '/': (context) => LoginPage(),
             '/home': (context) => HomePage(),
@@ -60,6 +61,7 @@ class _AppWidgetState extends State<AppWidget> {
             '/cad_seguro': (context) => CadSeguroPage(),
             '/user_config': (context) => UserConfigPage(),
             '/change_password': (context) => ChangePasswordPage(),
+            '/permission': (context) => PermissionPag(),
           },
         );
       },

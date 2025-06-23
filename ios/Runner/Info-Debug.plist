@@ -8,6 +8,44 @@
 	<array>
 		<string>${DART_DEBUG_BONJOUR_SERVICE}</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to the camera for taking photos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to the photo library for saving photos.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs access to the microphone for recording audio.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>This app needs access to Bluetooth for device communication.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>This app needs access to Bluetooth peripherals.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app needs access to your calendar for event management.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>This app needs access to your contacts for sharing information.</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>This app needs access to your reminders for task management.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>This app needs access to motion sensors for activity tracking.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>This app needs access to health data for fitness tracking.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>This app needs access to update health data.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs access to location when open and in the background.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app needs access to location when in the background.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to location in the background.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>This app needs access to Apple Music for music playback.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This app needs access to track your activity for personalized ads.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>This app needs access to Face ID for secure authentication.</string>
+	<key>NSFileProviderPresenceUsageDescription</key>
+	<string>This app needs access to file provider for managing files.</string>
+	<key>NSFileProviderDomainUsageDescription</key>
+	<string>This app needs access to file provider domains for file management.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -32,36 +70,6 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>This app needs access to Bluetooth for device communication.</string>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>This app needs access to Bluetooth peripherals.</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>This app needs access to your calendar for event management.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>This app needs access to the camera for taking photos.</string>
-	<key>NSContactsUsageDescription</key>
-	<string>This app needs access to your contacts for sharing information.</string>
-	<key>NSHealthShareUsageDescription</key>
-	<string>This app needs access to health data for fitness tracking.</string>
-	<key>NSHealthUpdateUsageDescription</key>
-	<string>This app needs access to update health data.</string>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>This app needs local network access for debugging and communication.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open and in the background.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app needs access to location when in the background.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location in the background.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>This app needs access to the microphone for recording audio.</string>
-	<key>NSMotionUsageDescription</key>
-	<string>This app needs access to motion sensors for activity tracking.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs access to the photo library for saving photos.</string>
-	<key>NSRemindersUsageDescription</key>
-	<string>This app needs access to your reminders for task management.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
