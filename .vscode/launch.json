@@ -24,6 +24,12 @@
             "type": "dart",
             "deviceId": "2976C920-4C2B-41F9-9F9E-1AADA4151EDC",
         },
+        {
+            "name":"chrome",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "chrome",
+        }
     ],
     "compounds": [
         {

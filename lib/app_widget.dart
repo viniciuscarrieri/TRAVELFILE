@@ -41,7 +41,7 @@ class _AppWidgetState extends State<AppWidget> {
                     ? Brightness.dark
                     : Brightness.light,
           ),
-          initialRoute: '/permission',
+          initialRoute: '/',
           routes: {
             '/': (context) => LoginPage(),
             '/home': (context) => HomePage(),

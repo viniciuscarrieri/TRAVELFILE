@@ -7,8 +7,9 @@ class GoogleAuthController {
 
   signInWithGoogle() async {
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn();
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+      final GoogleSignInAccount? googleUser =
+          await googleSignIn.attemptLightweightAuthentication();
       if (googleUser == null) {
         // O usuário cancelou o login
         return null;
@@ -17,7 +18,7 @@ class GoogleAuthController {
           await googleUser.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
+        accessToken: googleAuth.idToken,
         idToken: googleAuth.idToken,
       );
 

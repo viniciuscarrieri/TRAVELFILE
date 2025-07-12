@@ -75,6 +75,27 @@ class _PermissionPagState extends State<PermissionPag> {
         debugPrint("Permissão armazenamento negada");
       }
 
+      final statusStorage = await Permission.storage.status;
+      if (statusStorage.isGranted) {
+        await Permission.storage.status;
+        debugPrint("Permissão de armazenamento concedida");
+      } else if (statusStorage.isDenied) {
+        await Permission.storage.request();
+        // ignore: unused_element
+        showAboutDialog(context) async => {
+          await Permission.storage.request(),
+          debugPrint("Permissão de armazenamento concedida"),
+        };
+        debugPrint("Permissão armazenamento negada");
+      } else if (statusStorage.isPermanentlyDenied) {
+        // ignore: unused_element
+        showAboutDialog(context) async => {
+          await Permission.storage.request(),
+          debugPrint("Permissão de armazenamento concedida"),
+        };
+        debugPrint("Permissão armazenamento negada");
+      }
+
       final statusCamera = await Permission.camera.status;
       if (statusCamera.isGranted) {
         await Permission.camera.status;
