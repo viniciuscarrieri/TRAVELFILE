@@ -111,7 +111,7 @@ class _UserConfigPageState extends State<UserConfigPage> {
                 ElevatedButton(
                   onPressed: () async {
                     // ignore: deprecated_member_use
-                    auth.currentUser!.updateEmail(email);
+                    auth.currentUser!.verifyBeforeUpdateEmail(email);
                     auth.currentUser!.updateProfile(displayName: name);
                     await FirebaseAuth.instance.verifyPhoneNumber(
                       phoneNumber: phone,

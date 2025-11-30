@@ -118,7 +118,7 @@ class _AviaoPageState extends State<AviaoPage> {
                                 final file = await PDFAPI.loadNetwork(url);
                                 // ignore: use_build_context_synchronously
                                 openPDF(context, file);
-                                //openFile(HotelFiles[index].fullPath);
+                                //openFile(AviaoFiles[index].fullPath);
                               },
                               trailing: IconButton(
                                 icon: Icon(Icons.download, color: Colors.black),

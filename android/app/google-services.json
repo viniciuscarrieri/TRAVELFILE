@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "761760624263-398k01qdde7uamu9ih4ohgjm5m2590mm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.technobrothersti.viagens",
+            "certificate_hash": "b0dbb57d30cd25126765e527fc25047c143ba519"
+          }
+        },
+        {
           "client_id": "761760624263-8ptprv10n4unsj8euo8kkn30rshm2qvo.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -49,6 +57,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "761760624263-gt8kpujqujbtc2kkr7ja65fucmj0t47o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.travelfile",
+            "certificate_hash": "b0dbb57d30cd25126765e527fc25047c143ba519"
+          }
+        },
         {
           "client_id": "761760624263-8ptprv10n4unsj8euo8kkn30rshm2qvo.apps.googleusercontent.com",
           "client_type": 3

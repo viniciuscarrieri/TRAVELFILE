@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:travelfile/google_login.dart';
+import 'dart:io' show Platform;
 
 class CadMetodoLogin extends StatefulWidget {
   const CadMetodoLogin({super.key});
@@ -33,56 +34,59 @@ class _CadMetodoLoginState extends State<CadMetodoLogin> {
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
                     children: [
-                      ElevatedButton(
-                        onPressed: () async {
-                          await GoogleAuthController().signInWithGoogle();
-                          if (auth.currentUser != null) {
-                            Navigator.of(context).pushReplacementNamed('/home');
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Erro ao autenticar com o Google. Tente novamente.',
+                      if (Platform.isAndroid)
+                        ElevatedButton(
+                          onPressed: () async {
+                            await GoogleAuthController().signInWithGoogle();
+                            if (auth.currentUser != null) {
+                              Navigator.of(
+                                context,
+                              ).pushReplacementNamed('/home');
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Erro ao autenticar com o Google. Tente novamente.',
+                                  ),
+                                  duration: Duration(seconds: 3),
                                 ),
-                                duration: Duration(seconds: 3),
+                              );
+                            }
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/google_pb.png',
+                                width: 25,
+                                height: 25,
                               ),
-                            );
-                          }
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/images/google_pb.png',
-                              width: 25,
-                              height: 25,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              'Cadastro Google',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ],
+                              SizedBox(width: 10),
+                              Text(
+                                'Cadastro Google',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pushReplacementNamed('/');
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.apple, size: 30),
-                            SizedBox(width: 13),
-                            Text(
-                              'Cadastro Apple',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ],
+                      if (Platform.isIOS)
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacementNamed('/');
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.apple, size: 30),
+                              SizedBox(width: 13),
+                              Text(
+                                'Cadastro Apple',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: () {
                           Navigator.of(

@@ -8,6 +8,8 @@ class GoogleAuthController {
   signInWithGoogle() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+      await googleSignIn.initialize();
+
       final GoogleSignInAccount? googleUser =
           await googleSignIn.attemptLightweightAuthentication();
       if (googleUser == null) {

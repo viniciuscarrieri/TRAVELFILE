@@ -124,7 +124,7 @@ class _HotelPageState extends State<HotelPage> {
                               trailing: IconButton(
                                 icon: Icon(Icons.download, color: Colors.black),
                                 onPressed: () {
-                                  save(HotelFiles[index]);
+                                  save(HotelFiles[index].fullPath);
                                 },
                               ),
                               onLongPress: () {

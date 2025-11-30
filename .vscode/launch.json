@@ -4,6 +4,7 @@
     // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "Android",
             "request": "launch",
@@ -12,17 +13,10 @@
         },
 
         {
-            "name": "iPhone 18.3",
+            "name": "iPhone 17", 
             "request": "launch",
             "type": "dart",
-            "deviceId": "987E58CE-371B-4E00-BE50-80AD272BEF8A",
-        },
-
-        {
-            "name": "iPhone 18.5", 
-            "request": "launch",
-            "type": "dart",
-            "deviceId": "2976C920-4C2B-41F9-9F9E-1AADA4151EDC",
+            "deviceId": "4E5DF5F7-6A0A-418A-8E60-DC078AFAC937",
         },
         {
             "name":"chrome",
@@ -34,7 +28,7 @@
     "compounds": [
         {
             "name": "All Devices",
-            "configurations": ["Android", "iPhone 18.5"],
+            "configurations": ["Android", "iPhone 17"],
         }
     ]
 }
