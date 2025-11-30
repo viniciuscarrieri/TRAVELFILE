@@ -107,6 +107,20 @@ class _CadMetodoLoginState extends State<CadMetodoLogin> {
                           ],
                         ),
                       ),
+                      SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pushReplacementNamed('/');
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.undo, size: 30),
+                            SizedBox(width: 13),
+                            Text('Voltar', style: TextStyle(fontSize: 20)),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),

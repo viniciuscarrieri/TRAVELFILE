@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travelfile/app_controller.dart';
+import 'package:travelfile/authCheck.dart';
 import 'package:travelfile/aviao_page.dart';
 import 'package:travelfile/cad_aviao_page.dart';
 import 'package:travelfile/cad_carro_page.dart';
@@ -41,9 +42,10 @@ class _AppWidgetState extends State<AppWidget> {
                     ? Brightness.dark
                     : Brightness.light,
           ),
-          initialRoute: '/',
+          initialRoute: '/authCheck',
           routes: {
             '/': (context) => LoginPage(),
+            '/authCheck': (context) => authCheck(),
             '/home': (context) => HomePage(),
             '/cad_metodo_login': (context) => CadMetodoLogin(),
             '/cadastro': (context) => CadastroPage(),

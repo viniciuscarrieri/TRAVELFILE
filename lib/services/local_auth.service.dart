@@ -1,0 +1,19 @@
+import 'package:flutter/material.dart';
+import 'package:local_auth/local_auth.dart';
+
+class LocalAuthService extends ChangeNotifier {
+  final LocalAuthentication auth;
+
+  LocalAuthService({required this.auth});
+
+  Future<bool> isBiometricAvailable() async {
+    final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
+    return canAuthenticateWithBiometrics || await auth.isDeviceSupported();
+  }
+
+  Future<bool> autenticate() async {
+    return await auth.authenticate(
+      localizedReason: 'Por Favir Autentiqui-se para continuar',
+    );
+  }
+}

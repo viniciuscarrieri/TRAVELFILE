@@ -12,6 +12,8 @@
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs access to the camera for taking photos.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Why is my app authenticating using face id?</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs access to the photo library for saving photos.</string>
 	<key>NSMicrophoneUsageDescription</key>
