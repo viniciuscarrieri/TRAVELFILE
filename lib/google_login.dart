@@ -16,8 +16,7 @@ class GoogleAuthController {
         // O usuário cancelou o login
         return null;
       }
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.idToken,

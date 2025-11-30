@@ -40,9 +40,11 @@ class _CadMetodoLoginState extends State<CadMetodoLogin> {
                             await GoogleAuthController().signInWithGoogle();
                             if (auth.currentUser != null) {
                               Navigator.of(
+                                // ignore: use_build_context_synchronously
                                 context,
                               ).pushReplacementNamed('/home');
                             } else {
+                              // ignore: use_build_context_synchronously
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(

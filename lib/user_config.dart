@@ -32,7 +32,7 @@ class _UserConfigPageState extends State<UserConfigPage> {
                   children: [
                     TextField(
                       controller: TextEditingController(
-                        text: uid = '${auth.currentUser!.uid}',
+                        text: uid = auth.currentUser!.uid,
                       ),
                       enableInteractiveSelection: false,
                       decoration: InputDecoration(
