@@ -6,9 +6,9 @@
 	<string>${PRODUCT_NAME} uses the local network to discover Cast-enabled devices on your WiFi network.</string>
 	<key>NSBonjourServices</key>
 	<array>
-			<string>_googlecast._tcp</string>
-			<string>_dartVmService._tcp</string>
-			<string>_dartobservatory._tcp</string>
+		<string>_googlecast._tcp</string>
+		<string>_dartVmService._tcp</string>
+		<string>_dartobservatory._tcp</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs access to the camera for taking photos.</string>
@@ -87,6 +87,12 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>GIDClientID</key>
+	<!-- TODO Replace this value: -->
+	<!-- Copied from GoogleService-Info.plist key CLIENT_ID -->
+	<string>761760624263-fs35lqm43o7313vm2vrtk8ipbq3ls7sr.apps.googleusercontent.com</string>
+	<key>GIDServerClientID</key>
+	<string>761760624263-fs35lqm43o7313vm2vrtk8ipbq3ls7sr.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -96,7 +102,7 @@
 			<array>
 				<!-- TODO Replace this value: -->
 				<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
-				<string>com.googleusercontent.apps.861823949799-vc35cprkp249096uujjn0vvnmcvjppkn</string>
+				<string>com.googleusercontent.apps.761760624263-fs35lqm43o7313vm2vrtk8ipbq3ls7sr</string>
 			</array>
 		</dict>
 	</array>

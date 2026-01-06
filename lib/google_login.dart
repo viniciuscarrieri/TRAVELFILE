@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_sign_in_ios/google_sign_in_ios.dart';
 
 class GoogleAuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -16,8 +19,8 @@ class GoogleAuthController {
         // O usuário cancelou o login
         return null;
       }
-      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.idToken,
         idToken: googleAuth.idToken,

@@ -42,7 +42,7 @@ class _AppWidgetState extends State<AppWidget> {
                     ? Brightness.dark
                     : Brightness.light,
           ),
-          initialRoute: '/authCheck',
+          initialRoute: '/',
           routes: {
             '/': (context) => LoginPage(),
             '/authCheck': (context) => authCheck(),
