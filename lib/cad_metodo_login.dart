@@ -34,47 +34,49 @@ class _CadMetodoLoginState extends State<CadMetodoLogin> {
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
                     children: [
-                      //if (Platform.isAndroid)
-                      ElevatedButton(
-                        onPressed: () async {
-                          await GoogleAuthController().signInWithGoogle();
-                          if (auth.currentUser != null) {
-                            Navigator.of(
+                      if (Platform.isAndroid)
+                        ElevatedButton(
+                          onPressed: () async {
+                            await GoogleAuthController().signInWithGoogle();
+                            if (auth.currentUser != null) {
+                              Navigator.of(
+                                // ignore: use_build_context_synchronously
+                                context,
+                              ).pushReplacementNamed('/home');
+                            } else {
                               // ignore: use_build_context_synchronously
-                              context,
-                            ).pushReplacementNamed('/home');
-                          } else {
-                            // ignore: use_build_context_synchronously
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Erro ao autenticar com o Google. Tente novamente.',
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Erro ao autenticar com o Google. Tente novamente.',
+                                  ),
+                                  duration: Duration(seconds: 3),
                                 ),
-                                duration: Duration(seconds: 3),
+                              );
+                            }
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/google_pb.png',
+                                width: 25,
+                                height: 25,
                               ),
-                            );
-                          }
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/images/google_pb.png',
-                              width: 25,
-                              height: 25,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              'Cadastro Google',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ],
+                              SizedBox(width: 10),
+                              Text(
+                                'Cadastro Google',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
                       if (Platform.isIOS)
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pushReplacementNamed('/');
+                            Navigator.of(
+                              context,
+                            ).pushReplacementNamed('/google_plataform');
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -91,9 +93,7 @@ class _CadMetodoLoginState extends State<CadMetodoLogin> {
                       SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.of(
-                            context,
-                          ).pushReplacementNamed('/cadastro');
+                          Navigator.of(context).pushReplacementNamed('/');
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

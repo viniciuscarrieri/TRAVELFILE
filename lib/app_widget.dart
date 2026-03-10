@@ -20,6 +20,7 @@ import 'package:travelfile/permission.dart';
 import 'package:travelfile/seguro_page.dart';
 import 'package:travelfile/translado_page.dart';
 import 'package:travelfile/user_config.dart';
+import 'package:travelfile/google_plataform.dart';
 
 class AppWidget extends StatefulWidget {
   const AppWidget({super.key});
@@ -64,6 +65,7 @@ class _AppWidgetState extends State<AppWidget> {
             '/user_config': (context) => UserConfigPage(),
             '/change_password': (context) => ChangePasswordPage(),
             '/permission': (context) => PermissionPag(),
+            '/google_plataform': (context) => SignInDemo(),
           },
         );
       },

@@ -13,10 +13,10 @@
         },
 
         {
-            "name": "iPhone 17", 
+            "name": "iPhone", 
             "request": "launch",
             "type": "dart",
-            "deviceId": "7B187536-4693-4C55-B224-8FACBDA56294",
+            "deviceId": "02F7FC87-F6C8-45BF-A92F-BE815B3C5F00",
         },
         {
             "name":"chrome",
@@ -28,7 +28,7 @@
     "compounds": [
         {
             "name": "All Devices",
-            "configurations": ["Android", "iPhone 17"],
+            "configurations": ["Android", "iPhone"],
         }
     ]
 }
