@@ -2,14 +2,14 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:open_file/open_file.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:travelfile/app_theme.dart';
 import 'package:travelfile/pdf_api.dart';
 import 'package:travelfile/pdf_view_page.dart';
+import 'package:travelfile/shared_widgets.dart';
 
 class AviaoPage extends StatefulWidget {
   const AviaoPage({super.key});
@@ -20,174 +20,128 @@ class AviaoPage extends StatefulWidget {
 
 class _AviaoPageState extends State<AviaoPage> {
   final auth = FirebaseAuth.instance;
-  // ignore: non_constant_identifier_names
-  List AviaoFiles = [];
+  List<firebase_storage.Reference> aviaoFiles = [];
+  late Future<void> _futureListar;
 
-  // ignore: strict_top_level_inference
-  listarDocumentos() async {
-    final ref = FirebaseStorage.instance.ref().child(
+  @override
+  void initState() {
+    super.initState();
+    _futureListar = listarDocumentos();
+  }
+
+  Future<void> listarDocumentos() async {
+    final ref = firebase_storage.FirebaseStorage.instance.ref().child(
       'files/${auth.currentUser!.uid}/aviao',
     );
     final listResult = await ref.listAll();
-
-    for (var item in listResult.items) {
-      AviaoFiles.add(item);
-      print(item.name);
-    }
+    aviaoFiles = listResult.items;
   }
 
-  // ignore: strict_top_level_inference
-  urlToFile(String url) async {
-    final ref = FirebaseStorage.instance.ref(url);
-    final Directory appDocDir = await getApplicationDocumentsDirectory();
-    final String appDocPath = appDocDir.path;
-    final File tempFile = File('$appDocPath/${basename(url)}');
-    try {
-      await ref.writeToFile(tempFile);
-      await tempFile.create();
-      await openFile(tempFile.path);
-    } on FirebaseException {
-      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Error, file tidak bisa diunduh',
-            style: Theme.of(context as BuildContext).textTheme.bodyLarge,
-          ),
-        ),
-      );
-    }
+  Future<void> _deleteFile(firebase_storage.Reference ref) async {
+    await ref.delete();
+    setState(() => _futureListar = listarDocumentos());
   }
 
-  static Future<void> save(String fileName) async {
+  static Future<void> save(firebase_storage.Reference fileRef) async {
     String? directory = await FilePicker.platform.getDirectoryPath();
-
     if (directory != null) {
-      final File file = File('$directory/$fileName');
-      if (file.existsSync()) {
-        await file.delete();
-      }
+      final File file = File('$directory/${fileRef.name}');
+      if (file.existsSync()) await file.delete();
+      await fileRef.writeToFile(file);
+      OpenFile.open(file.path);
     }
-    OpenFile.open(fileName);
   }
 
-  // ignore: strict_top_level_inference
-  openFile(String filePath) async {
-    firebase_storage.Reference pdfRef = firebase_storage
-        .FirebaseStorage.instanceFor(
-      bucket: 'gs://viagens-7973d.firebasestorage.app',
-    ).refFromURL(filePath);
-    OpenFile.open(pdfRef as String?).then((result) {});
-  }
-
-  final List<int> colorCodes = <int>[700, 500, 300];
+  void _openPDF(BuildContext context, File file) => Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => PDFViewerPage(file: file)),
+      );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton.small(
-        child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.of(context).pushNamed('/cad_aviao');
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          await Navigator.of(context).pushNamed('/cad_aviao');
+          setState(() => _futureListar = listarDocumentos());
         },
+        icon: const Icon(Icons.add_rounded),
+        label: Text('Adicionar',
+            style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            Expanded(
-              child: FutureBuilder(
-                future: listarDocumentos(),
-                builder: (context, snapshot) {
-                  return ListView.builder(
-                    itemCount: AviaoFiles.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        //color: Colors.blue[colorCodes[index % 3]],
-                        child: GestureDetector(
-                          child: Card(
-                            child: ListTile(
-                              leading: returnlogo(AviaoFiles[index]),
-                              title: Text(
-                                AviaoFiles[index].name,
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              onTap: () async {
-                                final ref = FirebaseStorage.instance.ref(
-                                  AviaoFiles[index].fullPath,
-                                );
-                                final url = await ref.getDownloadURL();
-                                final file = await PDFAPI.loadNetwork(url);
-                                // ignore: use_build_context_synchronously
-                                openPDF(context, file);
-                                //openFile(AviaoFiles[index].fullPath);
-                              },
-                              trailing: IconButton(
-                                icon: Icon(Icons.download, color: Colors.black),
-                                onPressed: () {
-                                  save(AviaoFiles[index]);
-                                },
-                              ),
-                              onLongPress: () {
-                                showDialog(
-                                  context: context,
-                                  builder:
-                                      (context) => AlertDialog(
-                                        title: Text('Excluir arquivo'),
-                                        content: Text(
-                                          'Deseja excluir o arquivo ${AviaoFiles[index].name}?',
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              FirebaseStorage.instance
-                                                  .ref(
-                                                    AviaoFiles[index].fullPath,
-                                                  )
-                                                  .delete();
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text('Sim'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text('Não'),
-                                          ),
-                                        ],
-                                      ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    shrinkWrap: true,
-                  );
-                },
-              ),
+      body: FutureBuilder<void>(
+        future: _futureListar,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return const EmptyStateWidget(
+              icon: Icons.cloud_off_rounded,
+              message: 'Erro ao carregar arquivos.\nVerifique sua conexão.',
+            );
+          }
+          if (aviaoFiles.isEmpty) {
+            return EmptyStateWidget(
+              icon: Icons.airplanemode_active,
+              message: 'Nenhum documento aéreo\nencontrado.',
+              actionLabel: 'Adicionar agora',
+              onAction: () =>
+                  Navigator.of(context).pushNamed('/cad_aviao').then((_) {
+                setState(() => _futureListar = listarDocumentos());
+              }),
+            );
+          }
+          return RefreshIndicator(
+            onRefresh: () async =>
+                setState(() => _futureListar = listarDocumentos()),
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              itemCount: aviaoFiles.length,
+              itemBuilder: (context, index) {
+                final file = aviaoFiles[index];
+                return FileCard(
+                  fileRef: file,
+                  onTap: () async {
+                    final ref = firebase_storage.FirebaseStorage.instance
+                        .ref(file.fullPath);
+                    final url = await ref.getDownloadURL();
+                    final localFile = await PDFAPI.loadNetwork(url);
+                    if (context.mounted) _openPDF(context, localFile);
+                  },
+                  onDownload: () => save(file),
+                  onDelete: () => _showDeleteDialog(context, file),
+                );
+              },
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  // ignore: strict_top_level_inference
-  returnlogo(file) {
-    var ex = extension(file.name);
-    if (ex == '.jpg') {
-      return Icon(Icons.image, color: Colors.blue);
-    } else if (ex == '.pdf') {
-      return Icon(Icons.picture_as_pdf, color: Colors.red);
-    } else if (ex == '.doc') {
-      return Icon(Icons.description, color: Colors.green);
-    } else {
-      return Icon(Icons.file_present, color: Colors.grey);
-    }
+  void _showDeleteDialog(
+      BuildContext context, firebase_storage.Reference ref) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Excluir arquivo'),
+        content: Text('Deseja excluir "${ref.name}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            style:
+                ElevatedButton.styleFrom(backgroundColor: AppTheme.danger),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              _deleteFile(ref);
+            },
+            child: const Text('Excluir'),
+          ),
+        ],
+      ),
+    );
   }
-
-  void openPDF(BuildContext context, File file) => Navigator.of(
-    context,
-  ).push(MaterialPageRoute(builder: (context) => PDFViewerPage(file: file)));
 }

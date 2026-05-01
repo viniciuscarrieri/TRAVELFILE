@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travelfile/app_controller.dart';
-import 'package:travelfile/authCheck.dart';
+import 'package:travelfile/app_theme.dart';
+import 'package:travelfile/auth_check.dart';
 import 'package:travelfile/aviao_page.dart';
 import 'package:travelfile/cad_aviao_page.dart';
 import 'package:travelfile/cad_carro_page.dart';
@@ -36,34 +37,34 @@ class _AppWidgetState extends State<AppWidget> {
       animation: AppController.instance,
       builder: (context, child) {
         return MaterialApp(
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            brightness:
-                AppController.instance.isDarkTheme
-                    ? Brightness.dark
-                    : Brightness.light,
-          ),
+          title: 'TravelFile',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme(),
+          darkTheme: AppTheme.darkTheme(),
+          themeMode: AppController.instance.isDarkTheme
+              ? ThemeMode.dark
+              : ThemeMode.light,
           initialRoute: '/',
           routes: {
-            '/': (context) => LoginPage(),
-            '/authCheck': (context) => authCheck(),
-            '/home': (context) => HomePage(),
+            '/': (context) => const LoginPage(),
+            '/authCheck': (context) => const AuthCheck(),
+            '/home': (context) => const HomePage(),
             '/cad_metodo_login': (context) => CadMetodoLogin(),
-            '/cadastro': (context) => CadastroPage(),
-            '/aviao': (context) => AviaoPage(),
-            '/hotel': (context) => HotelPage(),
-            '/translado': (context) => TransladoPage(),
-            '/carro': (context) => CarroPage(),
-            '/ingressos': (context) => IngressosPage(),
-            '/seguro': (context) => SeguroPage(),
-            '/cad_aviao': (context) => CadAviaoPage(),
-            '/cad_hotel': (context) => CadHotelPage(),
-            '/cad_translado': (context) => CadTransferPage(),
-            '/cad_carro': (context) => CadCarroPage(),
-            '/cad_ingressos': (context) => CadIngressosPage(),
-            '/cad_seguro': (context) => CadSeguroPage(),
-            '/user_config': (context) => UserConfigPage(),
-            '/change_password': (context) => ChangePasswordPage(),
+            '/cadastro': (context) => const CadastroPage(),
+            '/aviao': (context) => const AviaoPage(),
+            '/hotel': (context) => const HotelPage(),
+            '/translado': (context) => const TransladoPage(),
+            '/carro': (context) => const CarroPage(),
+            '/ingressos': (context) => const IngressosPage(),
+            '/seguro': (context) => const SeguroPage(),
+            '/cad_aviao': (context) => const CadAviaoPage(),
+            '/cad_hotel': (context) => const CadHotelPage(),
+            '/cad_translado': (context) => const CadTransferPage(),
+            '/cad_carro': (context) => const CadCarroPage(),
+            '/cad_ingressos': (context) => const CadIngressosPage(),
+            '/cad_seguro': (context) => const CadSeguroPage(),
+            '/user_config': (context) => const UserConfigPage(),
+            '/change_password': (context) => const ChangePasswordPage(),
             '/permission': (context) => PermissionPag(),
             '/google_plataform': (context) => SignInDemo(),
           },

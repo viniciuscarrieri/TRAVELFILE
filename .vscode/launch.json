@@ -16,7 +16,7 @@
             "name": "iPhone", 
             "request": "launch",
             "type": "dart",
-            "deviceId": "02F7FC87-F6C8-45BF-A92F-BE815B3C5F00",
+            "deviceId": "BAB1E536-7C22-47D6-A579-C99284CD8B3B",
         },
         {
             "name":"chrome",

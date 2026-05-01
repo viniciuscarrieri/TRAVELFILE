@@ -1,117 +1,185 @@
 import 'dart:io';
-// ignore: depend_on_referenced_packages
-import 'package:path/path.dart';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as p;
+import 'package:travelfile/app_theme.dart';
+import 'package:travelfile/cad_aviao_page.dart' show CadUploadPage;
 
 class CadHotelPage extends StatefulWidget {
   const CadHotelPage({super.key});
-
   @override
   State<CadHotelPage> createState() => _CadHotelPageState();
 }
 
 class _CadHotelPageState extends State<CadHotelPage> {
-  List arquivosfile = [];
-
+  List<File> _selectedFiles = [];
   final auth = FirebaseAuth.instance;
+  bool _isUploading = false;
+  double _uploadProgress = 0;
 
-  // ignore: strict_top_level_inference
-  selectFile() async {
-    var result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'pdf', 'doc'],
-    );
-
-    if (result != null) {
-      setState(() {
-        arquivosfile = result.files.map((file) => File(file.path!)).toList();
-      });
-    }
+  Future<void> _selectFile() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx']);
+    if (result != null) setState(() => _selectedFiles = result.files.map((f) => File(f.path!)).toList());
   }
 
-  // ignore: strict_top_level_inference
-  uploadFile() async {
-    for (var arqFiles in arquivosfile) {
-      var name = arqFiles.path.split('/').last;
-      final path = 'files/${auth.currentUser!.uid}/hotel/$name';
-      final files = File(arqFiles.path);
-      if (!files.existsSync()) {
-        print('File does not exist');
+  Future<void> _uploadFiles() async {
+    if (_selectedFiles.isEmpty) return;
+    setState(() { _isUploading = true; _uploadProgress = 0; });
+    try {
+      for (int i = 0; i < _selectedFiles.length; i++) {
+        final file = _selectedFiles[i];
+        final task = FirebaseStorage.instance.ref('files/${auth.currentUser!.uid}/hotel/${p.basename(file.path)}').putFile(file);
+        task.snapshotEvents.listen((e) { if (mounted) setState(() => _uploadProgress = (i + e.bytesTransferred / e.totalBytes) / _selectedFiles.length); });
+        await task;
       }
-
-      //final refPDF = FirebaseStorage.instance.ref().child(path);
-
-      try {
-        //await ref.putFile(files);
-        await FirebaseStorage.instance.ref(path).putFile(files);
-        print('File uploaded successfully');
-      } catch (e) {
-        print('Error uploading file: $e');
-      }
-    }
+      if (mounted) { ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${_selectedFiles.length} arquivo(s) enviado(s)!'), backgroundColor: AppTheme.success)); Navigator.of(context).pop(); }
+    } catch (e) { if (mounted) { ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro: $e'), backgroundColor: AppTheme.danger)); setState(() => _isUploading = false); } }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Cadastro Hotel")),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Selecione o arquivo', style: TextStyle(fontSize: 20)),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: selectFile,
-              child: Text('Selecionar arquivo'),
-            ),
-            SizedBox(height: 20),
-            arquivosfile.isNotEmpty
-                ? ListView.builder(
-                  itemCount: arquivosfile.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      child: Card(
-                        child: ListTile(
-                          leading: returnlogo(arquivosfile[index]),
-                          subtitle: Text(
-                            'File: ${arquivosfile[index].path}',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                )
-                : Container(),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                uploadFile();
-              },
-              child: Text('Enviar arquivo'),
-            ),
-          ],
-        ),
-      ),
-    );
+  Widget build(BuildContext context) => CadUploadPage(title: 'Documentos de Hotel', subtitle: 'Vouchers, reservas, comprovantes', icon: Icons.hotel, selectedFiles: _selectedFiles, isUploading: _isUploading, uploadProgress: _uploadProgress, onSelectFile: _isUploading ? null : _selectFile, onUpload: _isUploading ? null : _uploadFiles, onRemoveFile: (i) => setState(() => _selectedFiles.removeAt(i)));
+}
+
+class CadCarroPage extends StatefulWidget {
+  const CadCarroPage({super.key});
+  @override
+  State<CadCarroPage> createState() => _CadCarroPageState();
+}
+
+class _CadCarroPageState extends State<CadCarroPage> {
+  List<File> _selectedFiles = [];
+  final auth = FirebaseAuth.instance;
+  bool _isUploading = false;
+  double _uploadProgress = 0;
+
+  Future<void> _selectFile() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx']);
+    if (result != null) setState(() => _selectedFiles = result.files.map((f) => File(f.path!)).toList());
   }
 
-  returnlogo(file) {
-    var ex = extension(file.path);
-    if (ex == '.jpg') {
-      return Icon(Icons.image, color: Colors.blue);
-    } else if (ex == '.pdf') {
-      return Icon(Icons.picture_as_pdf, color: Colors.red);
-    } else if (ex == '.doc') {
-      return Icon(Icons.description, color: Colors.green);
-    } else {
-      return Icon(Icons.file_present, color: Colors.grey);
-    }
+  Future<void> _uploadFiles() async {
+    if (_selectedFiles.isEmpty) return;
+    setState(() { _isUploading = true; _uploadProgress = 0; });
+    try {
+      for (int i = 0; i < _selectedFiles.length; i++) {
+        final file = _selectedFiles[i];
+        final task = FirebaseStorage.instance.ref('files/${auth.currentUser!.uid}/carro/${p.basename(file.path)}').putFile(file);
+        task.snapshotEvents.listen((e) { if (mounted) setState(() => _uploadProgress = (i + e.bytesTransferred / e.totalBytes) / _selectedFiles.length); });
+        await task;
+      }
+      if (mounted) { ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${_selectedFiles.length} arquivo(s) enviado(s)!'), backgroundColor: AppTheme.success)); Navigator.of(context).pop(); }
+    } catch (e) { if (mounted) { ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro: $e'), backgroundColor: AppTheme.danger)); setState(() => _isUploading = false); } }
   }
+
+  @override
+  Widget build(BuildContext context) => CadUploadPage(title: 'Documentos de Carro', subtitle: 'Locação, apólices, comprovantes', icon: Icons.directions_car, selectedFiles: _selectedFiles, isUploading: _isUploading, uploadProgress: _uploadProgress, onSelectFile: _isUploading ? null : _selectFile, onUpload: _isUploading ? null : _uploadFiles, onRemoveFile: (i) => setState(() => _selectedFiles.removeAt(i)));
 }
+
+class CadIngressosPage extends StatefulWidget {
+  const CadIngressosPage({super.key});
+  @override
+  State<CadIngressosPage> createState() => _CadIngressosPageState();
+}
+
+class _CadIngressosPageState extends State<CadIngressosPage> {
+  List<File> _selectedFiles = [];
+  final auth = FirebaseAuth.instance;
+  bool _isUploading = false;
+  double _uploadProgress = 0;
+
+  Future<void> _selectFile() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx']);
+    if (result != null) setState(() => _selectedFiles = result.files.map((f) => File(f.path!)).toList());
+  }
+
+  Future<void> _uploadFiles() async {
+    if (_selectedFiles.isEmpty) return;
+    setState(() { _isUploading = true; _uploadProgress = 0; });
+    try {
+      for (int i = 0; i < _selectedFiles.length; i++) {
+        final file = _selectedFiles[i];
+        final task = FirebaseStorage.instance.ref('files/${auth.currentUser!.uid}/ingressos/${p.basename(file.path)}').putFile(file);
+        task.snapshotEvents.listen((e) { if (mounted) setState(() => _uploadProgress = (i + e.bytesTransferred / e.totalBytes) / _selectedFiles.length); });
+        await task;
+      }
+      if (mounted) { ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${_selectedFiles.length} arquivo(s) enviado(s)!'), backgroundColor: AppTheme.success)); Navigator.of(context).pop(); }
+    } catch (e) { if (mounted) { ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro: $e'), backgroundColor: AppTheme.danger)); setState(() => _isUploading = false); } }
+  }
+
+  @override
+  Widget build(BuildContext context) => CadUploadPage(title: 'Ingressos', subtitle: 'Shows, passeios, eventos', icon: Icons.confirmation_number, selectedFiles: _selectedFiles, isUploading: _isUploading, uploadProgress: _uploadProgress, onSelectFile: _isUploading ? null : _selectFile, onUpload: _isUploading ? null : _uploadFiles, onRemoveFile: (i) => setState(() => _selectedFiles.removeAt(i)));
+}
+
+class CadSeguroPage extends StatefulWidget {
+  const CadSeguroPage({super.key});
+  @override
+  State<CadSeguroPage> createState() => _CadSeguroPageState();
+}
+
+class _CadSeguroPageState extends State<CadSeguroPage> {
+  List<File> _selectedFiles = [];
+  final auth = FirebaseAuth.instance;
+  bool _isUploading = false;
+  double _uploadProgress = 0;
+
+  Future<void> _selectFile() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx']);
+    if (result != null) setState(() => _selectedFiles = result.files.map((f) => File(f.path!)).toList());
+  }
+
+  Future<void> _uploadFiles() async {
+    if (_selectedFiles.isEmpty) return;
+    setState(() { _isUploading = true; _uploadProgress = 0; });
+    try {
+      for (int i = 0; i < _selectedFiles.length; i++) {
+        final file = _selectedFiles[i];
+        final task = FirebaseStorage.instance.ref('files/${auth.currentUser!.uid}/seguro/${p.basename(file.path)}').putFile(file);
+        task.snapshotEvents.listen((e) { if (mounted) setState(() => _uploadProgress = (i + e.bytesTransferred / e.totalBytes) / _selectedFiles.length); });
+        await task;
+      }
+      if (mounted) { ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${_selectedFiles.length} arquivo(s) enviado(s)!'), backgroundColor: AppTheme.success)); Navigator.of(context).pop(); }
+    } catch (e) { if (mounted) { ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro: $e'), backgroundColor: AppTheme.danger)); setState(() => _isUploading = false); } }
+  }
+
+  @override
+  Widget build(BuildContext context) => CadUploadPage(title: 'Seguros de Viagem', subtitle: 'Apólices, coberturas, certificados', icon: Icons.health_and_safety_outlined, selectedFiles: _selectedFiles, isUploading: _isUploading, uploadProgress: _uploadProgress, onSelectFile: _isUploading ? null : _selectFile, onUpload: _isUploading ? null : _uploadFiles, onRemoveFile: (i) => setState(() => _selectedFiles.removeAt(i)));
+}
+
+class CadTransferPage extends StatefulWidget {
+  const CadTransferPage({super.key});
+  @override
+  State<CadTransferPage> createState() => _CadTransferPageState();
+}
+
+class _CadTransferPageState extends State<CadTransferPage> {
+  List<File> _selectedFiles = [];
+  final auth = FirebaseAuth.instance;
+  bool _isUploading = false;
+  double _uploadProgress = 0;
+
+  Future<void> _selectFile() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx']);
+    if (result != null) setState(() => _selectedFiles = result.files.map((f) => File(f.path!)).toList());
+  }
+
+  Future<void> _uploadFiles() async {
+    if (_selectedFiles.isEmpty) return;
+    setState(() { _isUploading = true; _uploadProgress = 0; });
+    try {
+      for (int i = 0; i < _selectedFiles.length; i++) {
+        final file = _selectedFiles[i];
+        final task = FirebaseStorage.instance.ref('files/${auth.currentUser!.uid}/transfer/${p.basename(file.path)}').putFile(file);
+        task.snapshotEvents.listen((e) { if (mounted) setState(() => _uploadProgress = (i + e.bytesTransferred / e.totalBytes) / _selectedFiles.length); });
+        await task;
+      }
+      if (mounted) { ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${_selectedFiles.length} arquivo(s) enviado(s)!'), backgroundColor: AppTheme.success)); Navigator.of(context).pop(); }
+    } catch (e) { if (mounted) { ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro: $e'), backgroundColor: AppTheme.danger)); setState(() => _isUploading = false); } }
+  }
+
+  @override
+  Widget build(BuildContext context) => CadUploadPage(title: 'Transfer / Translado', subtitle: 'Vouchers, comprovantes, reservas', icon: Icons.directions_bus, selectedFiles: _selectedFiles, isUploading: _isUploading, uploadProgress: _uploadProgress, onSelectFile: _isUploading ? null : _selectFile, onUpload: _isUploading ? null : _uploadFiles, onRemoveFile: (i) => setState(() => _selectedFiles.removeAt(i)));
+}
+

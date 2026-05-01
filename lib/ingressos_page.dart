@@ -2,206 +2,78 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:open_file/open_file.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:travelfile/app_theme.dart';
 import 'package:travelfile/pdf_api.dart';
 import 'package:travelfile/pdf_view_page.dart';
+import 'package:travelfile/shared_widgets.dart';
 
 class IngressosPage extends StatefulWidget {
   const IngressosPage({super.key});
-
   @override
   State<IngressosPage> createState() => _IngressosPageState();
 }
 
 class _IngressosPageState extends State<IngressosPage> {
   final auth = FirebaseAuth.instance;
-  List IngressosFiles = [];
+  List<firebase_storage.Reference> ingressosFiles = [];
+  late Future<void> _futureListar;
 
-  listarDocumentos() async {
-    final ref = FirebaseStorage.instance.ref().child(
-      'files/${auth.currentUser!.uid}/ingressos',
-    );
-    final listResult = await ref.listAll();
+  @override
+  void initState() { super.initState(); _futureListar = listarDocumentos(); }
 
-    for (var item in listResult.items) {
-      IngressosFiles.add(item);
-      print(item.name);
-    }
+  Future<void> listarDocumentos() async {
+    final ref = firebase_storage.FirebaseStorage.instance.ref().child('files/${auth.currentUser!.uid}/ingressos');
+    ingressosFiles = (await ref.listAll()).items;
   }
 
-  urlToFile(String url) async {
-    final ref = FirebaseStorage.instance.ref(url);
-    final Directory appDocDir = await getApplicationDocumentsDirectory();
-    final String appDocPath = appDocDir.path;
-    final File tempFile = File('$appDocPath/${basename(url)}');
-    try {
-      await ref.writeToFile(tempFile);
-      await tempFile.create();
-      await openFile(tempFile.path);
-    } on FirebaseException {
-      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Error, file tidak bisa diunduh',
-            style: Theme.of(context as BuildContext).textTheme.bodyLarge,
-          ),
-        ),
-      );
-    }
+  Future<void> _deleteFile(firebase_storage.Reference ref) async {
+    await ref.delete();
+    setState(() => _futureListar = listarDocumentos());
   }
 
-  static Future<void> save(String fileName) async {
-    String? directory = await FilePicker.platform.getDirectoryPath();
-
-    if (directory != null) {
-      final File file = File('$directory/$fileName');
-      if (file.existsSync()) {
-        await file.delete();
-      }
-    }
-    OpenFile.open(fileName);
+  static Future<void> save(firebase_storage.Reference fileRef) async {
+    final dir = await FilePicker.platform.getDirectoryPath();
+    if (dir != null) { final f = File('$dir/${fileRef.name}'); if (f.existsSync()) await f.delete(); await fileRef.writeToFile(f); OpenFile.open(f.path); }
   }
 
-  openFile(String filePath) async {
-    firebase_storage.Reference pdfRef = firebase_storage
-        .FirebaseStorage.instanceFor(
-      bucket: 'gs://viagens-7973d.firebasestorage.app',
-    ).refFromURL(filePath);
-    print("AQUI 3");
-    print(pdfRef);
-    OpenFile.open(pdfRef as String?).then((result) {
-      print(result.message);
-      print(result.type);
-    });
-    print(filePath);
-  }
-
-  final List<int> colorCodes = <int>[700, 500, 300];
+  void _openPDF(BuildContext ctx, File file) => Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => PDFViewerPage(file: file)));
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton.small(
-        child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.of(context).pushNamed('/cad_ingressos');
-        },
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async { await Navigator.of(context).pushNamed('/cad_ingressos'); setState(() => _futureListar = listarDocumentos()); },
+        icon: const Icon(Icons.add_rounded),
+        label: Text('Adicionar', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            Expanded(
-              child: FutureBuilder(
-                future: listarDocumentos(),
-                builder: (context, snapshot) {
-                  return ListView.builder(
-                    itemCount: IngressosFiles.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        //color: Colors.blue[colorCodes[index % 3]],
-                        child: GestureDetector(
-                          child: Card(
-                            child: ListTile(
-                              leading: returnlogo(IngressosFiles[index]),
-                              title: Text(
-                                IngressosFiles[index].name,
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              onTap: () async {
-                                final ref = FirebaseStorage.instance.ref(
-                                  IngressosFiles[index].fullPath,
-                                );
-                                final url = await ref.getDownloadURL();
-                                final file = await PDFAPI.loadNetwork(url);
-                                openPDF(context, file);
-                                //openFile(HotelFiles[index].fullPath);
-                              },
-                              trailing: IconButton(
-                                icon: Icon(Icons.download, color: Colors.black),
-                                onPressed: () {
-                                  save(IngressosFiles[index]);
-                                },
-                              ),
-                              onLongPress: () {
-                                showDialog(
-                                  context: context,
-                                  builder:
-                                      (context) => AlertDialog(
-                                        title: Text('Excluir arquivo'),
-                                        content: Text(
-                                          'Deseja excluir o arquivo ${IngressosFiles[index].name}?',
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              FirebaseStorage.instance
-                                                  .ref(
-                                                    IngressosFiles[index]
-                                                        .fullPath,
-                                                  )
-                                                  .delete();
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text('Sim'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text('Não'),
-                                          ),
-                                        ],
-                                      ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    shrinkWrap: true,
-                  );
-                },
-              ),
+      body: FutureBuilder<void>(
+        future: _futureListar,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
+          if (snapshot.hasError) return const EmptyStateWidget(icon: Icons.cloud_off_rounded, message: 'Erro ao carregar arquivos.\nVerifique sua conexão.');
+          if (ingressosFiles.isEmpty) return EmptyStateWidget(icon: Icons.confirmation_number, message: 'Nenhum ingresso\nencontrado.', actionLabel: 'Adicionar agora', onAction: () => Navigator.of(context).pushNamed('/cad_ingressos').then((_) => setState(() => _futureListar = listarDocumentos())));
+          return RefreshIndicator(
+            onRefresh: () async => setState(() => _futureListar = listarDocumentos()),
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              itemCount: ingressosFiles.length,
+              itemBuilder: (context, index) {
+                final file = ingressosFiles[index];
+                return FileCard(
+                  fileRef: file,
+                  onTap: () async { final ref = firebase_storage.FirebaseStorage.instance.ref(file.fullPath); final url = await ref.getDownloadURL(); final lf = await PDFAPI.loadNetwork(url); if (context.mounted) _openPDF(context, lf); },
+                  onDownload: () => save(file),
+                  onDelete: () => showDialog(context: context, builder: (ctx) => AlertDialog(title: const Text('Excluir'), content: Text('Excluir "${file.name}"?'), actions: [TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Cancelar')), ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: AppTheme.danger), onPressed: () { Navigator.of(ctx).pop(); _deleteFile(file); }, child: const Text('Excluir'))])),
+                );
+              },
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
-
-  returnlogo(file) {
-    var ex = extension(file.name);
-    if (ex == '.jpg') {
-      return Icon(Icons.image, color: Colors.blue);
-    } else if (ex == '.pdf') {
-      return Icon(Icons.picture_as_pdf, color: Colors.red);
-    } else if (ex == '.doc') {
-      return Icon(Icons.description, color: Colors.green);
-    } else {
-      return Icon(Icons.file_present, color: Colors.grey);
-    }
-  }
-  /*
-  Future downloadFile(int index, Reference url) async {
-    final ref = await url.getDownloadURL();
-
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/$url.name');
-
-    await url.writeToFile(File(file as String));
-
-    ScaffoldMessenger.of(
-      context as BuildContext,
-    ).showSnackBar(SnackBar(content: Text('Download ${url.name}')));
-  }*/
-
-  void openPDF(BuildContext context, File file) => Navigator.of(
-    context,
-  ).push(MaterialPageRoute(builder: (context) => PDFViewerPage(file: file)));
 }
