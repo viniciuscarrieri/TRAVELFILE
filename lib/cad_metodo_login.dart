@@ -93,7 +93,9 @@ class _CadMetodoLoginState extends State<CadMetodoLogin> {
                       SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pushReplacementNamed('/');
+                          Navigator.of(
+                            context,
+                          ).pushReplacementNamed('/cadastro');
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

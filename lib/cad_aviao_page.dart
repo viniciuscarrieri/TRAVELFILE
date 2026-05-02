@@ -4,10 +4,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path/path.dart' as p;
 import 'package:travelfile/app_theme.dart';
 import 'package:travelfile/shared_widgets.dart';
+import 'package:travelfile/services/user_service.dart';
 
 class CadAviaoPage extends StatefulWidget {
   const CadAviaoPage({super.key});
@@ -23,8 +25,22 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
   double _uploadProgress = 0;
 
   Future<void> _selectFile() async {
+    final isPremium = await UserService.isUserPremium();
+    if (!isPremium && _selectedFiles.isNotEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Usuários gratuitos podem enviar apenas 1 arquivo. Assine o Premium para enviar mais arquivos.',
+            ),
+          ),
+        );
+      }
+      return;
+    }
+
     final result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
+      allowMultiple: isPremium,
       type: FileType.custom,
       allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'],
     );
@@ -37,7 +53,7 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
 
   Future<void> _uploadFiles() async {
     if (_selectedFiles.isEmpty) {
-      ScaffoldMessenger.of(this.context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Selecione ao menos um arquivo.')),
       );
       return;
@@ -46,6 +62,27 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
       _isUploading = true;
       _uploadProgress = 0;
     });
+    final isPremium = await UserService.isUserPremium();
+    if (!isPremium) {
+      final listResult =
+          await FirebaseStorage.instance
+              .ref('files/${auth.currentUser!.uid}/aviao')
+              .listAll();
+      if (listResult.items.length + _selectedFiles.length > 1) {
+        if (mounted)
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Você já atingiu o limite de 1 arquivo. Assine o Premium!',
+              ),
+            ),
+          );
+        setState(() {
+          _isUploading = false;
+        });
+        return;
+      }
+    }
     try {
       for (int i = 0; i < _selectedFiles.length; i++) {
         final file = _selectedFiles[i];
@@ -57,28 +94,30 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
             setState(() {
               _uploadProgress =
                   (i + event.bytesTransferred / event.totalBytes) /
-                      _selectedFiles.length;
+                  _selectedFiles.length;
             });
           }
         });
         await task;
       }
       if (mounted) {
-        ScaffoldMessenger.of(this.context).showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Row(children: [
-              const Icon(Icons.check_circle, color: Colors.white, size: 18),
-              const SizedBox(width: 8),
-              Text('${_selectedFiles.length} arquivo(s) enviado(s)!'),
-            ]),
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle, color: Colors.white, size: 18),
+                const SizedBox(width: 8),
+                Text('${_selectedFiles.length} arquivo(s) enviado(s)!'),
+              ],
+            ),
             backgroundColor: AppTheme.success,
           ),
         );
-        Navigator.of(this.context).pop();
+        Navigator.of(context).pop('/aviao');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(this.context).showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Erro ao enviar: $e'),
             backgroundColor: AppTheme.danger,

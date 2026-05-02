@@ -102,8 +102,9 @@ class HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: Colors.white.withAlpha(31),
-                        borderRadius:
-                            BorderRadius.circular(AppTheme.radiusMedium),
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.radiusMedium,
+                        ),
                       ),
                       child: const Icon(
                         Icons.menu_rounded,
@@ -112,17 +113,39 @@ class HomePageState extends State<HomePage> {
                       ),
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                      borderRadius: BorderRadius.circular(
+                        AppTheme.radiusMedium,
+                      ),
                     ),
-                    itemBuilder: (context) => [
-                      _buildPopupItem(
-                          0, Icons.settings_outlined, 'Configurações'),
-                      _buildPopupItem(1, Icons.key_outlined, 'Trocar Senha'),
-                      _buildPopupItem(
-                          2, Icons.privacy_tip_outlined, 'Política de Privacidade'),
-                      _buildPopupItem(3, Icons.logout_rounded, 'Sair',
-                          color: AppTheme.danger),
-                    ],
+                    itemBuilder:
+                        (context) => [
+                          _buildPopupItem(
+                            0,
+                            Icons.settings_outlined,
+                            'Configurações',
+                          ),
+                          _buildPopupItem(
+                            1,
+                            Icons.key_outlined,
+                            'Trocar Senha',
+                          ),
+                          _buildPopupItem(
+                            2,
+                            Icons.workspace_premium,
+                            'Conta Premium',
+                          ),
+                          _buildPopupItem(
+                            3,
+                            Icons.privacy_tip_outlined,
+                            'Política de Privacidade',
+                          ),
+                          _buildPopupItem(
+                            4,
+                            Icons.logout_rounded,
+                            'Sair',
+                            color: AppTheme.danger,
+                          ),
+                        ],
                     onSelected: (item) => _onMenuSelected(context, item),
                   ),
                 ],
@@ -133,10 +156,9 @@ class HomePageState extends State<HomePage> {
       ),
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 250),
-        transitionBuilder: (child, animation) => FadeTransition(
-          opacity: animation,
-          child: child,
-        ),
+        transitionBuilder:
+            (child, animation) =>
+                FadeTransition(opacity: animation, child: child),
         child: KeyedSubtree(
           key: ValueKey(_selectedIndex),
           child: _pages[_selectedIndex],
@@ -170,8 +192,7 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildNavItem(
-      _NavItem item, int index, bool selected, bool isDark) {
+  Widget _buildNavItem(_NavItem item, int index, bool selected, bool isDark) {
     return GestureDetector(
       onTap: () => setState(() => _selectedIndex = index),
       behavior: HitTestBehavior.opaque,
@@ -179,9 +200,7 @@ class HomePageState extends State<HomePage> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: selected
-              ? AppTheme.accent.withAlpha(26)
-              : Colors.transparent,
+          color: selected ? AppTheme.accent.withAlpha(26) : Colors.transparent,
           borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
         ),
         child: Column(
@@ -190,20 +209,21 @@ class HomePageState extends State<HomePage> {
             Icon(
               item.icon,
               size: 24,
-              color: selected
-                  ? (isDark ? AppTheme.accentLight : AppTheme.primaryDark)
-                  : Colors.grey,
+              color:
+                  selected
+                      ? (isDark ? AppTheme.accentLight : AppTheme.primaryDark)
+                      : Colors.grey,
             ),
             const SizedBox(height: 2),
             Text(
               item.label,
               style: GoogleFonts.poppins(
                 fontSize: 10,
-                fontWeight:
-                    selected ? FontWeight.w600 : FontWeight.w400,
-                color: selected
-                    ? (isDark ? AppTheme.accentLight : AppTheme.primaryDark)
-                    : Colors.grey,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                color:
+                    selected
+                        ? (isDark ? AppTheme.accentLight : AppTheme.primaryDark)
+                        : Colors.grey,
               ),
             ),
           ],
@@ -224,23 +244,30 @@ class HomePageState extends State<HomePage> {
         shape: BoxShape.circle,
         border: Border.all(color: Colors.white.withAlpha(77), width: 2),
       ),
-      child: hasPhoto
-          ? ClipOval(child: Image.network(user!.photoURL!, fit: BoxFit.cover))
-          : Center(
-              child: Text(
-                initial,
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
+      child:
+          hasPhoto
+              ? ClipOval(
+                child: Image.network(user!.photoURL!, fit: BoxFit.cover),
+              )
+              : Center(
+                child: Text(
+                  initial,
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
                 ),
               ),
-            ),
     );
   }
 
-  PopupMenuItem<int> _buildPopupItem(int value, IconData icon, String label,
-      {Color? color}) {
+  PopupMenuItem<int> _buildPopupItem(
+    int value,
+    IconData icon,
+    String label, {
+    Color? color,
+  }) {
     final itemColor = color ?? AppTheme.textPrimary;
     return PopupMenuItem<int>(
       value: value,
@@ -266,32 +293,36 @@ class HomePageState extends State<HomePage> {
         Navigator.of(context).pushNamed('/change_password');
         break;
       case 2:
+        Navigator.of(context).pushNamed('/premium');
         break;
       case 3:
+        break;
+      case 4:
         showDialog(
           context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Sair'),
-            content: const Text('Deseja realmente sair?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('Cancelar'),
+          builder:
+              (ctx) => AlertDialog(
+                title: const Text('Sair'),
+                content: const Text('Deseja realmente sair?'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    child: const Text('Cancelar'),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.danger,
+                    ),
+                    onPressed: () async {
+                      await FirebaseAuth.instance.signOut();
+                      if (ctx.mounted) {
+                        Navigator.of(ctx).pushReplacementNamed('/');
+                      }
+                    },
+                    child: const Text('Sair'),
+                  ),
+                ],
               ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.danger,
-                ),
-                onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
-                  if (ctx.mounted) {
-                    Navigator.of(ctx).pushReplacementNamed('/');
-                  }
-                },
-                child: const Text('Sair'),
-              ),
-            ],
-          ),
         );
         break;
     }

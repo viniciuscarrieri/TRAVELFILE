@@ -34,6 +34,7 @@ class GoogleAuthController {
         'photoUrl': googleUser.photoUrl,
         'dataCadastro': DateTime.now(),
         'status': 'ativo',
+        'isPremium': false,
       });
       return userCredential.user;
     } catch (e) {

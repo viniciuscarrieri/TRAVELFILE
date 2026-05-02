@@ -34,12 +34,20 @@ class _AviaoPageState extends State<AviaoPage> {
       'files/${auth.currentUser!.uid}/aviao',
     );
     final listResult = await ref.listAll();
-    aviaoFiles = listResult.items;
+
+    setState(() {
+      aviaoFiles = listResult.items;
+    });
+    //aviaoFiles = listResult.items;
   }
 
   Future<void> _deleteFile(firebase_storage.Reference ref) async {
     await ref.delete();
-    setState(() => _futureListar = listarDocumentos());
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Arquivo excluído com sucesso!')),
+    );
+
+    await listarDocumentos();
   }
 
   static Future<void> save(firebase_storage.Reference fileRef) async {
@@ -52,9 +60,9 @@ class _AviaoPageState extends State<AviaoPage> {
     }
   }
 
-  void _openPDF(BuildContext context, File file) => Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => PDFViewerPage(file: file)),
-      );
+  void _openPDF(BuildContext context, File file) => Navigator.of(
+    context,
+  ).push(MaterialPageRoute(builder: (context) => PDFViewerPage(file: file)));
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +70,12 @@ class _AviaoPageState extends State<AviaoPage> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           await Navigator.of(context).pushNamed('/cad_aviao');
-          setState(() => _futureListar = listarDocumentos());
         },
         icon: const Icon(Icons.add_rounded),
-        label: Text('Adicionar',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+        label: Text(
+          'Adicionar',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        ),
       ),
       body: FutureBuilder<void>(
         future: _futureListar,
@@ -85,15 +94,15 @@ class _AviaoPageState extends State<AviaoPage> {
               icon: Icons.airplanemode_active,
               message: 'Nenhum documento aéreo\nencontrado.',
               actionLabel: 'Adicionar agora',
-              onAction: () =>
-                  Navigator.of(context).pushNamed('/cad_aviao').then((_) {
-                setState(() => _futureListar = listarDocumentos());
-              }),
+              onAction:
+                  () => Navigator.of(context).pushNamed('/cad_aviao').then((_) {
+                    setState(() => _futureListar = listarDocumentos());
+                  }),
             );
           }
           return RefreshIndicator(
-            onRefresh: () async =>
-                setState(() => _futureListar = listarDocumentos()),
+            onRefresh:
+                () async => setState(() => _futureListar = listarDocumentos()),
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 12),
               itemCount: aviaoFiles.length,
@@ -102,8 +111,9 @@ class _AviaoPageState extends State<AviaoPage> {
                 return FileCard(
                   fileRef: file,
                   onTap: () async {
-                    final ref = firebase_storage.FirebaseStorage.instance
-                        .ref(file.fullPath);
+                    final ref = firebase_storage.FirebaseStorage.instance.ref(
+                      file.fullPath,
+                    );
                     final url = await ref.getDownloadURL();
                     final localFile = await PDFAPI.loadNetwork(url);
                     if (context.mounted) _openPDF(context, localFile);
@@ -119,29 +129,30 @@ class _AviaoPageState extends State<AviaoPage> {
     );
   }
 
-  void _showDeleteDialog(
-      BuildContext context, firebase_storage.Reference ref) {
+  void _showDeleteDialog(BuildContext context, firebase_storage.Reference ref) {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Excluir arquivo'),
-        content: Text('Deseja excluir "${ref.name}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancelar'),
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text('Excluir arquivo'),
+            content: Text('Deseja excluir "${ref.name}"?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Cancelar'),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.danger,
+                ),
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  _deleteFile(ref);
+                },
+                child: const Text('Excluir'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            style:
-                ElevatedButton.styleFrom(backgroundColor: AppTheme.danger),
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              _deleteFile(ref);
-            },
-            child: const Text('Excluir'),
-          ),
-        ],
-      ),
     );
   }
 }

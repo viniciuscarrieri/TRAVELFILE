@@ -99,6 +99,7 @@ class _CadastroPageState extends State<CadastroPage>
         'email': _emailController.text.trim(),
         'dataCadastro': DateTime.now(),
         'status': 'ativo',
+        'isPremium': false,
       });
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('/');

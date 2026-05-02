@@ -23,41 +23,81 @@ class _CarroPageState extends State<CarroPage> {
   late Future<void> _futureListar;
 
   @override
-  void initState() { super.initState(); _futureListar = listarDocumentos(); }
+  void initState() {
+    super.initState();
+    _futureListar = listarDocumentos();
+  }
 
   Future<void> listarDocumentos() async {
-    final ref = firebase_storage.FirebaseStorage.instance.ref().child('files/${auth.currentUser!.uid}/carro');
-    carroFiles = (await ref.listAll()).items;
+    final ref = firebase_storage.FirebaseStorage.instance.ref().child(
+      'files/${auth.currentUser!.uid}/carro',
+    );
+    final listResult = await ref.listAll();
+
+    setState(() {
+      carroFiles = listResult.items;
+    });
   }
 
   Future<void> _deleteFile(firebase_storage.Reference ref) async {
     await ref.delete();
-    setState(() => _futureListar = listarDocumentos());
+    await listarDocumentos();
   }
 
   static Future<void> save(firebase_storage.Reference fileRef) async {
     final dir = await FilePicker.platform.getDirectoryPath();
-    if (dir != null) { final f = File('$dir/${fileRef.name}'); if (f.existsSync()) await f.delete(); await fileRef.writeToFile(f); OpenFile.open(f.path); }
+    if (dir != null) {
+      final f = File('$dir/${fileRef.name}');
+      if (f.existsSync()) await f.delete();
+      await fileRef.writeToFile(f);
+      OpenFile.open(f.path);
+    }
   }
 
-  void _openPDF(BuildContext ctx, File file) => Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => PDFViewerPage(file: file)));
+  void _openPDF(BuildContext ctx, File file) => Navigator.of(
+    ctx,
+  ).push(MaterialPageRoute(builder: (_) => PDFViewerPage(file: file)));
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async { await Navigator.of(context).pushNamed('/cad_carro'); setState(() => _futureListar = listarDocumentos()); },
+        onPressed: () async {
+          await Navigator.of(context).pushNamed('/cad_carro');
+          setState(() => _futureListar = listarDocumentos());
+        },
         icon: const Icon(Icons.add_rounded),
-        label: Text('Adicionar', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+        label: Text(
+          'Adicionar',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        ),
       ),
       body: FutureBuilder<void>(
         future: _futureListar,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
-          if (snapshot.hasError) return const EmptyStateWidget(icon: Icons.cloud_off_rounded, message: 'Erro ao carregar arquivos.\nVerifique sua conexão.');
-          if (carroFiles.isEmpty) return EmptyStateWidget(icon: Icons.directions_car, message: 'Nenhum documento de carro\nencontrado.', actionLabel: 'Adicionar agora', onAction: () => Navigator.of(context).pushNamed('/cad_carro').then((_) => setState(() => _futureListar = listarDocumentos())));
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return const Center(child: CircularProgressIndicator());
+          if (snapshot.hasError)
+            return const EmptyStateWidget(
+              icon: Icons.cloud_off_rounded,
+              message: 'Erro ao carregar arquivos.\nVerifique sua conexão.',
+            );
+          if (carroFiles.isEmpty)
+            return EmptyStateWidget(
+              icon: Icons.directions_car,
+              message: 'Nenhum documento de carro\nencontrado.',
+              actionLabel: 'Adicionar agora',
+              onAction:
+                  () => Navigator.of(context)
+                      .pushNamed('/cad_carro')
+                      .then(
+                        (_) =>
+                            setState(() => _futureListar = listarDocumentos()),
+                      ),
+            );
           return RefreshIndicator(
-            onRefresh: () async => setState(() => _futureListar = listarDocumentos()),
+            onRefresh:
+                () async => setState(() => _futureListar = listarDocumentos()),
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 12),
               itemCount: carroFiles.length,
@@ -65,9 +105,40 @@ class _CarroPageState extends State<CarroPage> {
                 final file = carroFiles[index];
                 return FileCard(
                   fileRef: file,
-                  onTap: () async { final ref = firebase_storage.FirebaseStorage.instance.ref(file.fullPath); final url = await ref.getDownloadURL(); final lf = await PDFAPI.loadNetwork(url); if (context.mounted) _openPDF(context, lf); },
+                  onTap: () async {
+                    final ref = firebase_storage.FirebaseStorage.instance.ref(
+                      file.fullPath,
+                    );
+                    final url = await ref.getDownloadURL();
+                    final lf = await PDFAPI.loadNetwork(url);
+                    if (context.mounted) _openPDF(context, lf);
+                  },
                   onDownload: () => save(file),
-                  onDelete: () => showDialog(context: context, builder: (ctx) => AlertDialog(title: const Text('Excluir'), content: Text('Excluir "${file.name}"?'), actions: [TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Cancelar')), ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: AppTheme.danger), onPressed: () { Navigator.of(ctx).pop(); _deleteFile(file); }, child: const Text('Excluir'))])),
+                  onDelete:
+                      () => showDialog(
+                        context: context,
+                        builder:
+                            (ctx) => AlertDialog(
+                              title: const Text('Excluir'),
+                              content: Text('Excluir "${file.name}"?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(ctx).pop(),
+                                  child: const Text('Cancelar'),
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppTheme.danger,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(ctx).pop();
+                                    _deleteFile(file);
+                                  },
+                                  child: const Text('Excluir'),
+                                ),
+                              ],
+                            ),
+                      ),
                 );
               },
             ),
