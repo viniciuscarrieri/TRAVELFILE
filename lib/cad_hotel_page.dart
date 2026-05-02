@@ -24,7 +24,7 @@ class _CadHotelPageState extends State<CadHotelPage> {
   Future<void> _selectFile() async {
     final isPremium = await UserService.isUserPremium();
     if (!isPremium && _selectedFiles.isNotEmpty) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
@@ -32,6 +32,7 @@ class _CadHotelPageState extends State<CadHotelPage> {
             ),
           ),
         );
+      }
       return;
     }
     final result = await FilePicker.platform.pickFiles(
@@ -39,10 +40,11 @@ class _CadHotelPageState extends State<CadHotelPage> {
       type: FileType.custom,
       allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'],
     );
-    if (result != null)
+    if (result != null) {
       setState(
         () => _selectedFiles = result.files.map((f) => File(f.path!)).toList(),
       );
+    }
   }
 
   Future<void> _uploadFiles() async {
@@ -58,7 +60,7 @@ class _CadHotelPageState extends State<CadHotelPage> {
               .ref('files/${auth.currentUser!.uid}/hotel')
               .listAll();
       if (listResult.items.length + _selectedFiles.length > 1) {
-        if (mounted)
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
@@ -66,6 +68,7 @@ class _CadHotelPageState extends State<CadHotelPage> {
               ),
             ),
           );
+        }
         setState(() {
           _isUploading = false;
         });
@@ -85,13 +88,14 @@ class _CadHotelPageState extends State<CadHotelPage> {
             )
             .putFile(file);
         task.snapshotEvents.listen((e) {
-          if (mounted)
+          if (mounted) {
             setState(
               () =>
                   _uploadProgress =
                       (i + e.bytesTransferred / e.totalBytes) /
                       _selectedFiles.length,
             );
+          }
         });
         await task;
       }
@@ -102,7 +106,7 @@ class _CadHotelPageState extends State<CadHotelPage> {
             backgroundColor: AppTheme.success,
           ),
         );
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
       }
     } catch (e) {
       if (mounted) {
@@ -143,7 +147,7 @@ class _CadCarroPageState extends State<CadCarroPage> {
   Future<void> _selectFile() async {
     final isPremium = await UserService.isUserPremium();
     if (!isPremium && _selectedFiles.isNotEmpty) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
@@ -151,6 +155,7 @@ class _CadCarroPageState extends State<CadCarroPage> {
             ),
           ),
         );
+      }
       return;
     }
     final result = await FilePicker.platform.pickFiles(
@@ -158,10 +163,11 @@ class _CadCarroPageState extends State<CadCarroPage> {
       type: FileType.custom,
       allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'],
     );
-    if (result != null)
+    if (result != null) {
       setState(
         () => _selectedFiles = result.files.map((f) => File(f.path!)).toList(),
       );
+    }
   }
 
   Future<void> _uploadFiles() async {
@@ -177,7 +183,7 @@ class _CadCarroPageState extends State<CadCarroPage> {
               .ref('files/${auth.currentUser!.uid}/carro')
               .listAll();
       if (listResult.items.length + _selectedFiles.length > 1) {
-        if (mounted)
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
@@ -185,6 +191,7 @@ class _CadCarroPageState extends State<CadCarroPage> {
               ),
             ),
           );
+        }
         setState(() {
           _isUploading = false;
         });
@@ -204,13 +211,14 @@ class _CadCarroPageState extends State<CadCarroPage> {
             )
             .putFile(file);
         task.snapshotEvents.listen((e) {
-          if (mounted)
+          if (mounted) {
             setState(
               () =>
                   _uploadProgress =
                       (i + e.bytesTransferred / e.totalBytes) /
                       _selectedFiles.length,
             );
+          }
         });
         await task;
       }
@@ -221,7 +229,7 @@ class _CadCarroPageState extends State<CadCarroPage> {
             backgroundColor: AppTheme.success,
           ),
         );
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
       }
     } catch (e) {
       if (mounted) {
@@ -262,7 +270,7 @@ class _CadIngressosPageState extends State<CadIngressosPage> {
   Future<void> _selectFile() async {
     final isPremium = await UserService.isUserPremium();
     if (!isPremium && _selectedFiles.isNotEmpty) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
@@ -270,6 +278,7 @@ class _CadIngressosPageState extends State<CadIngressosPage> {
             ),
           ),
         );
+      }
       return;
     }
     final result = await FilePicker.platform.pickFiles(
@@ -277,10 +286,11 @@ class _CadIngressosPageState extends State<CadIngressosPage> {
       type: FileType.custom,
       allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'],
     );
-    if (result != null)
+    if (result != null) {
       setState(
         () => _selectedFiles = result.files.map((f) => File(f.path!)).toList(),
       );
+    }
   }
 
   Future<void> _uploadFiles() async {
@@ -296,7 +306,7 @@ class _CadIngressosPageState extends State<CadIngressosPage> {
               .ref('files/${auth.currentUser!.uid}/ingressos')
               .listAll();
       if (listResult.items.length + _selectedFiles.length > 1) {
-        if (mounted)
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
@@ -304,6 +314,7 @@ class _CadIngressosPageState extends State<CadIngressosPage> {
               ),
             ),
           );
+        }
         setState(() {
           _isUploading = false;
         });
@@ -323,13 +334,14 @@ class _CadIngressosPageState extends State<CadIngressosPage> {
             )
             .putFile(file);
         task.snapshotEvents.listen((e) {
-          if (mounted)
+          if (mounted) {
             setState(
               () =>
                   _uploadProgress =
                       (i + e.bytesTransferred / e.totalBytes) /
                       _selectedFiles.length,
             );
+          }
         });
         await task;
       }
@@ -340,7 +352,7 @@ class _CadIngressosPageState extends State<CadIngressosPage> {
             backgroundColor: AppTheme.success,
           ),
         );
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
       }
     } catch (e) {
       if (mounted) {
@@ -381,7 +393,7 @@ class _CadSeguroPageState extends State<CadSeguroPage> {
   Future<void> _selectFile() async {
     final isPremium = await UserService.isUserPremium();
     if (!isPremium && _selectedFiles.isNotEmpty) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
@@ -389,6 +401,7 @@ class _CadSeguroPageState extends State<CadSeguroPage> {
             ),
           ),
         );
+      }
       return;
     }
     final result = await FilePicker.platform.pickFiles(
@@ -396,10 +409,11 @@ class _CadSeguroPageState extends State<CadSeguroPage> {
       type: FileType.custom,
       allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'],
     );
-    if (result != null)
+    if (result != null) {
       setState(
         () => _selectedFiles = result.files.map((f) => File(f.path!)).toList(),
       );
+    }
   }
 
   Future<void> _uploadFiles() async {
@@ -415,7 +429,7 @@ class _CadSeguroPageState extends State<CadSeguroPage> {
               .ref('files/${auth.currentUser!.uid}/seguro')
               .listAll();
       if (listResult.items.length + _selectedFiles.length > 1) {
-        if (mounted)
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
@@ -423,6 +437,7 @@ class _CadSeguroPageState extends State<CadSeguroPage> {
               ),
             ),
           );
+        }
         setState(() {
           _isUploading = false;
         });
@@ -442,13 +457,14 @@ class _CadSeguroPageState extends State<CadSeguroPage> {
             )
             .putFile(file);
         task.snapshotEvents.listen((e) {
-          if (mounted)
+          if (mounted) {
             setState(
               () =>
                   _uploadProgress =
                       (i + e.bytesTransferred / e.totalBytes) /
                       _selectedFiles.length,
             );
+          }
         });
         await task;
       }
@@ -459,7 +475,7 @@ class _CadSeguroPageState extends State<CadSeguroPage> {
             backgroundColor: AppTheme.success,
           ),
         );
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
       }
     } catch (e) {
       if (mounted) {
@@ -500,7 +516,7 @@ class _CadTransferPageState extends State<CadTransferPage> {
   Future<void> _selectFile() async {
     final isPremium = await UserService.isUserPremium();
     if (!isPremium && _selectedFiles.isNotEmpty) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
@@ -508,6 +524,7 @@ class _CadTransferPageState extends State<CadTransferPage> {
             ),
           ),
         );
+      }
       return;
     }
     final result = await FilePicker.platform.pickFiles(
@@ -515,10 +532,11 @@ class _CadTransferPageState extends State<CadTransferPage> {
       type: FileType.custom,
       allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'],
     );
-    if (result != null)
+    if (result != null) {
       setState(
         () => _selectedFiles = result.files.map((f) => File(f.path!)).toList(),
       );
+    }
   }
 
   Future<void> _uploadFiles() async {
@@ -534,7 +552,7 @@ class _CadTransferPageState extends State<CadTransferPage> {
               .ref('files/${auth.currentUser!.uid}/transfer')
               .listAll();
       if (listResult.items.length + _selectedFiles.length > 1) {
-        if (mounted)
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
@@ -542,6 +560,7 @@ class _CadTransferPageState extends State<CadTransferPage> {
               ),
             ),
           );
+        }
         setState(() {
           _isUploading = false;
         });
@@ -561,13 +580,14 @@ class _CadTransferPageState extends State<CadTransferPage> {
             )
             .putFile(file);
         task.snapshotEvents.listen((e) {
-          if (mounted)
+          if (mounted) {
             setState(
               () =>
                   _uploadProgress =
                       (i + e.bytesTransferred / e.totalBytes) /
                       _selectedFiles.length,
             );
+          }
         });
         await task;
       }

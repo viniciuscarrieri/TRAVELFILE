@@ -63,8 +63,8 @@ class _IngressosPageState extends State<IngressosPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          await Navigator.of(context).pushNamed('/cad_ingressos');
-          setState(() => _futureListar = listarDocumentos());
+          final result = await Navigator.of(context).pushNamed('/cad_ingressos');
+          if (result == true) setState(() => _futureListar = listarDocumentos());
         },
         icon: const Icon(Icons.add_rounded),
         label: Text(
@@ -87,13 +87,10 @@ class _IngressosPageState extends State<IngressosPage> {
               icon: Icons.confirmation_number,
               message: 'Nenhum ingresso\nencontrado.',
               actionLabel: 'Adicionar agora',
-              onAction:
-                  () => Navigator.of(context)
-                      .pushNamed('/cad_ingressos')
-                      .then(
-                        (_) =>
-                            setState(() => _futureListar = listarDocumentos()),
-                      ),
+              onAction: () async {
+                final result = await Navigator.of(context).pushNamed('/cad_ingressos');
+                if (result == true) setState(() => _futureListar = listarDocumentos());
+              },
             );
           return RefreshIndicator(
             onRefresh:

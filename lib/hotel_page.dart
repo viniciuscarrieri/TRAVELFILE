@@ -63,8 +63,8 @@ class _HotelPageState extends State<HotelPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          await Navigator.of(context).pushNamed('/cad_hotel');
-          setState(() => _futureListar = listarDocumentos());
+          final result = await Navigator.of(context).pushNamed('/cad_hotel');
+          if (result == true) setState(() => _futureListar = listarDocumentos());
         },
         icon: const Icon(Icons.add_rounded),
         label: Text(
@@ -87,13 +87,10 @@ class _HotelPageState extends State<HotelPage> {
               icon: Icons.hotel,
               message: 'Nenhum documento de hotel\nencontrado.',
               actionLabel: 'Adicionar agora',
-              onAction:
-                  () => Navigator.of(context)
-                      .pushNamed('/cad_hotel')
-                      .then(
-                        (_) =>
-                            setState(() => _futureListar = listarDocumentos()),
-                      ),
+              onAction: () async {
+                final result = await Navigator.of(context).pushNamed('/cad_hotel');
+                if (result == true) setState(() => _futureListar = listarDocumentos());
+              },
             );
           return RefreshIndicator(
             onRefresh:

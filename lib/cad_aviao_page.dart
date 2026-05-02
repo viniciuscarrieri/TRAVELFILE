@@ -8,6 +8,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path/path.dart' as p;
 import 'package:travelfile/app_theme.dart';
+import 'package:travelfile/aviao_page.dart';
 import 'package:travelfile/shared_widgets.dart';
 import 'package:travelfile/services/user_service.dart';
 
@@ -69,7 +70,7 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
               .ref('files/${auth.currentUser!.uid}/aviao')
               .listAll();
       if (listResult.items.length + _selectedFiles.length > 1) {
-        if (mounted)
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
@@ -77,6 +78,7 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
               ),
             ),
           );
+        }
         setState(() {
           _isUploading = false;
         });
@@ -113,7 +115,7 @@ class _CadAviaoPageState extends State<CadAviaoPage> {
             backgroundColor: AppTheme.success,
           ),
         );
-        Navigator.of(context).pop('/aviao');
+        Navigator.of(context).pop(true);
       }
     } catch (e) {
       if (mounted) {

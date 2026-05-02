@@ -63,8 +63,8 @@ class _TransladoPageState extends State<TransladoPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          await Navigator.of(context).pushNamed('/cad_translado');
-          setState(() => _futureListar = listarDocumentos());
+          final result = await Navigator.of(context).pushNamed('/cad_translado');
+          if (result == true) setState(() => _futureListar = listarDocumentos());
         },
         icon: const Icon(Icons.add_rounded),
         label: Text(
@@ -87,13 +87,10 @@ class _TransladoPageState extends State<TransladoPage> {
               icon: Icons.directions_bus,
               message: 'Nenhum documento de transfer\nencontrado.',
               actionLabel: 'Adicionar agora',
-              onAction:
-                  () => Navigator.of(context)
-                      .pushNamed('/cad_translado')
-                      .then(
-                        (_) =>
-                            setState(() => _futureListar = listarDocumentos()),
-                      ),
+              onAction: () async {
+                final result = await Navigator.of(context).pushNamed('/cad_translado');
+                if (result == true) setState(() => _futureListar = listarDocumentos());
+              },
             );
           return RefreshIndicator(
             onRefresh:

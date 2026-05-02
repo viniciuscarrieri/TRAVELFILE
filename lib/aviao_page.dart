@@ -69,7 +69,10 @@ class _AviaoPageState extends State<AviaoPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          await Navigator.of(context).pushNamed('/cad_aviao');
+          final result = await Navigator.of(context).pushNamed('/cad_aviao');
+          if (result == true) {
+            setState(() => _futureListar = listarDocumentos());
+          }
         },
         icon: const Icon(Icons.add_rounded),
         label: Text(
@@ -94,10 +97,13 @@ class _AviaoPageState extends State<AviaoPage> {
               icon: Icons.airplanemode_active,
               message: 'Nenhum documento aéreo\nencontrado.',
               actionLabel: 'Adicionar agora',
-              onAction:
-                  () => Navigator.of(context).pushNamed('/cad_aviao').then((_) {
-                    setState(() => _futureListar = listarDocumentos());
-                  }),
+              onAction: () async {
+                final result = await Navigator.of(
+                  context,
+                ).pushNamed('/cad_aviao');
+                if (result == true)
+                  setState(() => _futureListar = listarDocumentos());
+              },
             );
           }
           return RefreshIndicator(
