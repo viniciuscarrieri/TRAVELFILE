@@ -4,11 +4,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+//import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path/path.dart' as p;
 import 'package:travelfile/app_theme.dart';
-import 'package:travelfile/aviao_page.dart';
+//import 'package:travelfile/aviao_page.dart';
 import 'package:travelfile/shared_widgets.dart';
 import 'package:travelfile/services/user_service.dart';
 
