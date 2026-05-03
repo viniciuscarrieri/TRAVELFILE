@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:travelfile/app_controller.dart';
 import 'package:travelfile/app_theme.dart';
@@ -45,7 +46,7 @@ class _AppWidgetState extends State<AppWidget> {
           themeMode: AppController.instance.isDarkTheme
               ? ThemeMode.dark
               : ThemeMode.light,
-          initialRoute: '/',
+          initialRoute: FirebaseAuth.instance.currentUser != null ? '/authCheck' : '/',
           routes: {
             '/': (context) => const LoginPage(),
             '/authCheck': (context) => const AuthCheck(),

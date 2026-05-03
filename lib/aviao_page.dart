@@ -71,7 +71,7 @@ class _AviaoPageState extends State<AviaoPage> {
         onPressed: () async {
           final result = await Navigator.of(context).pushNamed('/cad_aviao');
           if (result == true) {
-            setState(() => _futureListar = listarDocumentos());
+            setState(() async => _futureListar = listarDocumentos());
           }
         },
         icon: const Icon(Icons.add_rounded),

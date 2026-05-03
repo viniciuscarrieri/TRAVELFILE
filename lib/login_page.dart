@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage>
         password: password,
       );
       if (credential.user != null && mounted) {
-        Navigator.of(context).pushReplacementNamed('/home');
+        Navigator.of(context).pushReplacementNamed('/authCheck');
       }
     } on FirebaseAuthException catch (e) {
       setState(() => _isLoading = false);

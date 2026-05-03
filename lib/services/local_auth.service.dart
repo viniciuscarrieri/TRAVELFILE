@@ -12,8 +12,13 @@ class LocalAuthService extends ChangeNotifier {
   }
 
   Future<bool> autenticate() async {
-    return await auth.authenticate(
-      localizedReason: 'Por Favir Autentiqui-se para continuar',
-    );
+    try {
+      return await auth.authenticate(
+        localizedReason: 'Por favor, autentique-se para continuar',
+      );
+    } catch (e) {
+      debugPrint('Erro na biometria: $e');
+      return false;
+    }
   }
 }

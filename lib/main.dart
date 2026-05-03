@@ -4,6 +4,9 @@ import 'package:travelfile/app_widget.dart';
 import 'package:travelfile/firebase_options.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 
+import 'package:provider/provider.dart';
+import 'package:travelfile/providers.dart';
+
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -17,5 +20,10 @@ main() async {
     androidProvider: AndroidProvider.playIntegrity,
   );
 
-  runApp(AppWidget());
+  runApp(
+    MultiProvider(
+      providers: providers,
+      child: const AppWidget(),
+    ),
+  );
 }

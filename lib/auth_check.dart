@@ -27,7 +27,9 @@ class _AuthCheckState extends State<AuthCheck>
     _pulseAnim = Tween<double>(begin: 0.9, end: 1.05).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
-    checkLocalAuth();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkLocalAuth();
+    });
   }
 
   @override
@@ -37,20 +39,25 @@ class _AuthCheckState extends State<AuthCheck>
   }
 
   Future<void> checkLocalAuth() async {
-    final auth = context.read<LocalAuthService>();
-    final isAvailable = await auth.isBiometricAvailable();
-    _authFailed.value = false;
-    if (isAvailable) {
-      final authenticated = await auth.autenticate();
-      if (!authenticated) {
-        _authFailed.value = true;
+    try {
+      final auth = context.read<LocalAuthService>();
+      final isAvailable = await auth.isBiometricAvailable();
+      _authFailed.value = false;
+      if (isAvailable) {
+        final authenticated = await auth.autenticate();
+        if (!authenticated) {
+          _authFailed.value = true;
+        } else {
+          if (!mounted) return;
+          Navigator.of(context).pushReplacementNamed('/home');
+        }
       } else {
         if (!mounted) return;
         Navigator.of(context).pushReplacementNamed('/home');
       }
-    } else {
-      if (!mounted) return;
-      Navigator.of(context).pushReplacementNamed('/home');
+    } catch (e) {
+      debugPrint('Erro geral na biometria: $e');
+      _authFailed.value = true;
     }
   }
 

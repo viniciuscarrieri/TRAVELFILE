@@ -18,6 +18,14 @@
             "type": "dart",
             "deviceId": "BAB1E536-7C22-47D6-A579-C99284CD8B3B",
         },
+
+        {
+            "name": "iPhone Vinicius", 
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "00008120-000E79D62190A01E",
+        },
+
         {
             "name":"chrome",
             "request": "launch",
@@ -29,6 +37,11 @@
         {
             "name": "All Devices",
             "configurations": ["Android", "iPhone"],
+        },
+        {
+            "name": "All Devices + iPhone Vinicius",
+            "configurations": ["Android", "iPhone", "iPhone Vinicius"],
         }
     ]
 }
+//00008120-000E79D62190A01E

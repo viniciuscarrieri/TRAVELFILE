@@ -63,8 +63,12 @@ class _IngressosPageState extends State<IngressosPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          final result = await Navigator.of(context).pushNamed('/cad_ingressos');
-          if (result == true) setState(() => _futureListar = listarDocumentos());
+          final result = await Navigator.of(
+            context,
+          ).pushNamed('/cad_ingressos');
+          if (result == true) {
+            setState(() async => _futureListar = listarDocumentos());
+          }
         },
         icon: const Icon(Icons.add_rounded),
         label: Text(
@@ -75,23 +79,30 @@ class _IngressosPageState extends State<IngressosPage> {
       body: FutureBuilder<void>(
         future: _futureListar,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting)
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          if (snapshot.hasError)
+          }
+          if (snapshot.hasError) {
             return const EmptyStateWidget(
               icon: Icons.cloud_off_rounded,
               message: 'Erro ao carregar arquivos.\nVerifique sua conexão.',
             );
-          if (ingressosFiles.isEmpty)
+          }
+          if (ingressosFiles.isEmpty) {
             return EmptyStateWidget(
               icon: Icons.confirmation_number,
               message: 'Nenhum ingresso\nencontrado.',
               actionLabel: 'Adicionar agora',
               onAction: () async {
-                final result = await Navigator.of(context).pushNamed('/cad_ingressos');
-                if (result == true) setState(() => _futureListar = listarDocumentos());
+                final result = await Navigator.of(
+                  context,
+                ).pushNamed('/cad_ingressos');
+                if (result == true) {
+                  setState(() => _futureListar = listarDocumentos());
+                }
               },
             );
+          }
           return RefreshIndicator(
             onRefresh:
                 () async => setState(() => _futureListar = listarDocumentos()),
