@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travelfile/app_theme.dart';
+import 'package:travelfile/google_login.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -33,10 +34,7 @@ class _LoginPageState extends State<LoginPage>
       vsync: this,
       duration: const Duration(milliseconds: 900),
     );
-    _fadeAnim = CurvedAnimation(
-      parent: _animController,
-      curve: Curves.easeOut,
-    );
+    _fadeAnim = CurvedAnimation(parent: _animController, curve: Curves.easeOut);
     _slideAnim = Tween<Offset>(
       begin: const Offset(0, 0.12),
       end: Offset.zero,
@@ -83,14 +81,13 @@ class _LoginPageState extends State<LoginPage>
         password: password,
       );
       if (credential.user != null && mounted) {
-        Navigator.of(context).pushReplacementNamed('/authCheck');
+        Navigator.of(context).pushReplacementNamed('/home');
       }
     } on FirebaseAuthException catch (e) {
       setState(() => _isLoading = false);
       if (e.code == 'invalid-email') {
         setState(() => _emailError = 'E-mail inválido');
-      } else if (e.code == 'invalid-credential' ||
-          e.code == 'wrong-password') {
+      } else if (e.code == 'invalid-credential' || e.code == 'wrong-password') {
         setState(() => _passwordError = 'Senha incorreta');
       } else if (e.code == 'user-not-found') {
         setState(() => _emailError = 'Usuário não encontrado');
@@ -100,6 +97,21 @@ class _LoginPageState extends State<LoginPage>
     } catch (_) {
       setState(() => _isLoading = false);
       _showErrorSnackBar('Ocorreu um erro inesperado.');
+    }
+  }
+
+  Future<void> _handleGoogleLogin() async {
+    setState(() => _isLoading = true);
+    try {
+      final user = await GoogleAuthController().signInWithGoogle();
+      if (user != null && mounted) {
+        Navigator.of(context).pushReplacementNamed('/home');
+      } else {
+        setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      setState(() => _isLoading = false);
+      _showErrorSnackBar('Erro ao entrar com Google');
     }
   }
 
@@ -122,49 +134,52 @@ class _LoginPageState extends State<LoginPage>
     final emailCtrl = TextEditingController();
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Recuperar Senha'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Digite seu e-mail para receber o link de redefinição.',
-              style: GoogleFonts.poppins(fontSize: 13),
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text('Recuperar Senha'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Digite seu e-mail para receber o link de redefinição.',
+                  style: GoogleFonts.poppins(fontSize: 13),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: emailCtrl,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    labelText: 'E-mail',
+                    prefixIcon: Icon(Icons.email_outlined),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: emailCtrl,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: 'E-mail',
-                prefixIcon: Icon(Icons.email_outlined),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Cancelar'),
               ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancelar'),
+              ElevatedButton(
+                onPressed: () async {
+                  if (emailCtrl.text.trim().isNotEmpty) {
+                    await _auth.sendPasswordResetEmail(
+                      email: emailCtrl.text.trim(),
+                    );
+                    if (ctx.mounted) {
+                      Navigator.of(ctx).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('E-mail de recuperação enviado!'),
+                        ),
+                      );
+                    }
+                  }
+                },
+                child: const Text('Enviar'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () async {
-              if (emailCtrl.text.trim().isNotEmpty) {
-                await _auth.sendPasswordResetEmail(
-                  email: emailCtrl.text.trim(),
-                );
-                if (ctx.mounted) {
-                  Navigator.of(ctx).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('E-mail de recuperação enviado!')),
-                  );
-                }
-              }
-            },
-            child: const Text('Enviar'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -192,7 +207,9 @@ class _LoginPageState extends State<LoginPage>
                           height: 120,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                            borderRadius: BorderRadius.circular(
+                              AppTheme.radiusLarge,
+                            ),
                             boxShadow: AppTheme.elevatedShadow,
                           ),
                           padding: const EdgeInsets.all(16),
@@ -226,7 +243,9 @@ class _LoginPageState extends State<LoginPage>
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(AppTheme.radiusXL),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.radiusXL,
+                          ),
                           boxShadow: AppTheme.elevatedShadow,
                         ),
                         padding: const EdgeInsets.all(28),
@@ -258,8 +277,8 @@ class _LoginPageState extends State<LoginPage>
                                   ),
                                   errorText: _emailError,
                                 ),
-                                onChanged: (_) =>
-                                    setState(() => _emailError = null),
+                                onChanged:
+                                    (_) => setState(() => _emailError = null),
                               ),
                               const SizedBox(height: 16),
 
@@ -281,13 +300,17 @@ class _LoginPageState extends State<LoginPage>
                                           : Icons.visibility_off_outlined,
                                       color: AppTheme.textSecondary,
                                     ),
-                                    onPressed: () => setState(
-                                      () => _obscurePassword = !_obscurePassword,
-                                    ),
+                                    onPressed:
+                                        () => setState(
+                                          () =>
+                                              _obscurePassword =
+                                                  !_obscurePassword,
+                                        ),
                                   ),
                                 ),
-                                onChanged: (_) =>
-                                    setState(() => _passwordError = null),
+                                onChanged:
+                                    (_) =>
+                                        setState(() => _passwordError = null),
                                 onSubmitted: (_) => _handleLogin(),
                               ),
                               const SizedBox(height: 8),
@@ -322,9 +345,65 @@ class _LoginPageState extends State<LoginPage>
                                 width: double.infinity,
                                 height: 52,
                                 child: OutlinedButton(
-                                  onPressed: () => Navigator.of(context)
-                                      .pushReplacementNamed('/cad_metodo_login'),
+                                  onPressed:
+                                      () => Navigator.of(
+                                        context,
+                                      ).pushReplacementNamed(
+                                        '/cad_metodo_login',
+                                      ),
                                   child: const Text('Criar conta'),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+
+                              // Divisor "ou"
+                              Row(
+                                children: [
+                                  const Expanded(child: Divider()),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                    ),
+                                    child: Text(
+                                      'OU',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppTheme.textSecondary.withAlpha(
+                                          128,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const Expanded(child: Divider()),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+
+                              // Botão Google
+                              SizedBox(
+                                width: double.infinity,
+                                height: 52,
+                                child: OutlinedButton(
+                                  onPressed:
+                                      _isLoading ? null : _handleGoogleLogin,
+                                  style: OutlinedButton.styleFrom(
+                                    side: BorderSide(
+                                      color: Colors.grey.shade300,
+                                    ),
+                                    foregroundColor: AppTheme.textPrimary,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/google_color.png',
+                                        height: 24,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      const Text('Entrar com Google'),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],

@@ -42,7 +42,7 @@ class _CadMetodoLoginState extends State<CadMetodoLogin> {
                               Navigator.of(
                                 // ignore: use_build_context_synchronously
                                 context,
-                              ).pushReplacementNamed('/authCheck');
+                              ).pushReplacementNamed('/home');
                             } else {
                               // ignore: use_build_context_synchronously
                               ScaffoldMessenger.of(context).showSnackBar(

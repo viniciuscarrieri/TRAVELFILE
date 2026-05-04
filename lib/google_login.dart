@@ -4,18 +4,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleAuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final dynamic googleSignIn = GoogleSignIn.instance;
 
   signInWithGoogle() async {
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn.instance;
       await googleSignIn.initialize();
 
-      final GoogleSignInAccount? googleUser =
-          await googleSignIn.attemptLightweightAuthentication();
-      if (googleUser == null) {
-        // O usuário cancelou o login
-        return null;
-      }
+      final GoogleSignInAccount googleUser = await googleSignIn.authenticate();
 
       final GoogleSignInAuthentication googleAuth = googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(

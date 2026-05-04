@@ -46,7 +46,7 @@ class _AppWidgetState extends State<AppWidget> {
           themeMode: AppController.instance.isDarkTheme
               ? ThemeMode.dark
               : ThemeMode.light,
-          initialRoute: FirebaseAuth.instance.currentUser != null ? '/authCheck' : '/',
+          initialRoute: FirebaseAuth.instance.currentUser != null ? '/home' : '/',
           routes: {
             '/': (context) => const LoginPage(),
             '/authCheck': (context) => const AuthCheck(),

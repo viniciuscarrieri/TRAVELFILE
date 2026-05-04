@@ -27,6 +27,13 @@
         },
 
         {
+            "name": "iPhone Vinicius - Wifi", 
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "00008120-000E79D62190A01E",
+        },
+
+        {
             "name":"chrome",
             "request": "launch",
             "type": "dart",
