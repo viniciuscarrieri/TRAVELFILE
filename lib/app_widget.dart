@@ -19,11 +19,13 @@ import 'package:travelfile/hotel_page.dart';
 import 'package:travelfile/ingressos_page.dart';
 import 'package:travelfile/login_page.dart';
 import 'package:travelfile/permission.dart';
+import 'package:travelfile/poli_privacidade.dart';
 import 'package:travelfile/seguro_page.dart';
 import 'package:travelfile/translado_page.dart';
 import 'package:travelfile/user_config.dart';
 import 'package:travelfile/google_plataform.dart';
 import 'package:travelfile/premium_page.dart';
+import 'package:travelfile/splash_page.dart';
 
 class AppWidget extends StatefulWidget {
   const AppWidget({super.key});
@@ -43,11 +45,13 @@ class _AppWidgetState extends State<AppWidget> {
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme(),
           darkTheme: AppTheme.darkTheme(),
-          themeMode: AppController.instance.isDarkTheme
-              ? ThemeMode.dark
-              : ThemeMode.light,
-          initialRoute: FirebaseAuth.instance.currentUser != null ? '/home' : '/',
+          themeMode:
+              AppController.instance.isDarkTheme
+                  ? ThemeMode.dark
+                  : ThemeMode.light,
+          initialRoute: '/splash',
           routes: {
+            '/splash': (context) => const SplashPage(),
             '/': (context) => const LoginPage(),
             '/authCheck': (context) => const AuthCheck(),
             '/home': (context) => const HomePage(),
@@ -70,6 +74,7 @@ class _AppWidgetState extends State<AppWidget> {
             '/permission': (context) => PermissionPag(),
             '/google_plataform': (context) => SignInDemo(),
             '/premium': (context) => const PremiumPage(),
+            '/poli_privacidade': (context) => const PoliPrivacidadePage(),
           },
         );
       },

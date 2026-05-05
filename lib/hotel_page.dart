@@ -64,7 +64,7 @@ class _HotelPageState extends State<HotelPage> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           final result = await Navigator.of(context).pushNamed('/cad_hotel');
-          if (result == true) setState(() => _futureListar = listarDocumentos());
+          if (result == true) await listarDocumentos();
         },
         icon: const Icon(Icons.add_rounded),
         label: Text(
@@ -75,26 +75,30 @@ class _HotelPageState extends State<HotelPage> {
       body: FutureBuilder<void>(
         future: _futureListar,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting)
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          if (snapshot.hasError)
+          }
+          if (snapshot.hasError) {
             return const EmptyStateWidget(
               icon: Icons.cloud_off_rounded,
               message: 'Erro ao carregar arquivos.\nVerifique sua conexão.',
             );
-          if (hotelFiles.isEmpty)
+          }
+          if (hotelFiles.isEmpty) {
             return EmptyStateWidget(
               icon: Icons.hotel,
               message: 'Nenhum documento de hotel\nencontrado.',
               actionLabel: 'Adicionar agora',
               onAction: () async {
-                final result = await Navigator.of(context).pushNamed('/cad_hotel');
-                if (result == true) setState(() => _futureListar = listarDocumentos());
+                final result = await Navigator.of(
+                  context,
+                ).pushNamed('/cad_hotel');
+                if (result == true) await listarDocumentos();
               },
             );
+          }
           return RefreshIndicator(
-            onRefresh:
-                () async => setState(() => _futureListar = listarDocumentos()),
+            onRefresh: () async => await listarDocumentos(),
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 12),
               itemCount: hotelFiles.length,

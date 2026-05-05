@@ -98,14 +98,13 @@ class _IngressosPageState extends State<IngressosPage> {
                   context,
                 ).pushNamed('/cad_ingressos');
                 if (result == true) {
-                  setState(() => _futureListar = listarDocumentos());
+                  await listarDocumentos();
                 }
               },
             );
           }
           return RefreshIndicator(
-            onRefresh:
-                () async => setState(() => _futureListar = listarDocumentos()),
+            onRefresh: () async => await listarDocumentos(),
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 12),
               itemCount: ingressosFiles.length,

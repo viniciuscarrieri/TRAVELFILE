@@ -66,6 +66,28 @@ class HomePageState extends State<HomePage> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
                 children: [
+                  // Logo do App
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(26),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(6),
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
                   // Avatar + Texto
                   Expanded(
                     child: Row(
@@ -296,6 +318,7 @@ class HomePageState extends State<HomePage> {
         Navigator.of(context).pushNamed('/premium');
         break;
       case 3:
+        Navigator.of(context).pushNamed('/poli_privacidade');
         break;
       case 4:
         showDialog(
