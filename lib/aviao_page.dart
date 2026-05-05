@@ -71,7 +71,7 @@ class _AviaoPageState extends State<AviaoPage> {
         onPressed: () async {
           final result = await Navigator.of(context).pushNamed('/cad_aviao');
           if (result == true) {
-            setState(() async => _futureListar = listarDocumentos());
+            await listarDocumentos();
           }
         },
         icon: const Icon(Icons.add_rounded),
@@ -101,14 +101,14 @@ class _AviaoPageState extends State<AviaoPage> {
                 final result = await Navigator.of(
                   context,
                 ).pushNamed('/cad_aviao');
-                if (result == true)
-                  setState(() => _futureListar = listarDocumentos());
+                if (result == true) {
+                  await listarDocumentos();
+                }
               },
             );
           }
           return RefreshIndicator(
-            onRefresh:
-                () async => setState(() => _futureListar = listarDocumentos()),
+            onRefresh: () async => await listarDocumentos(),
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 12),
               itemCount: aviaoFiles.length,
