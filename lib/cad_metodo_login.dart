@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:travelfile/apple_login.dart';
 import 'package:travelfile/google_login.dart';
 import 'dart:io' show Platform;
 
@@ -34,49 +35,62 @@ class _CadMetodoLoginState extends State<CadMetodoLogin> {
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
                     children: [
-                      if (Platform.isAndroid)
+                      ElevatedButton(
+                        onPressed: () async {
+                          await GoogleAuthController().signInWithGoogle();
+                          if (auth.currentUser != null) {
+                            Navigator.of(
+                              // ignore: use_build_context_synchronously
+                              context,
+                            ).pushReplacementNamed('/home');
+                          } else {
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Erro ao autenticar com o Google. Tente novamente.',
+                                ),
+                                duration: Duration(seconds: 3),
+                              ),
+                            );
+                          }
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/google_pb.png',
+                              width: 25,
+                              height: 25,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              'Cadastro Google',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      if (Platform.isIOS)
                         ElevatedButton(
                           onPressed: () async {
-                            await GoogleAuthController().signInWithGoogle();
-                            if (auth.currentUser != null) {
+                            final user =
+                                await AppleAuthController().signInWithApple();
+                            if (user != null && mounted) {
                               Navigator.of(
-                                // ignore: use_build_context_synchronously
                                 context,
                               ).pushReplacementNamed('/home');
-                            } else {
-                              // ignore: use_build_context_synchronously
+                            } else if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                                const SnackBar(
                                   content: Text(
-                                    'Erro ao autenticar com o Google. Tente novamente.',
+                                    'Erro ao autenticar com a Apple. Tente novamente.',
                                   ),
                                   duration: Duration(seconds: 3),
                                 ),
                               );
                             }
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/images/google_pb.png',
-                                width: 25,
-                                height: 25,
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                'Cadastro Google',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ],
-                          ),
-                        ),
-                      if (Platform.isIOS)
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(
-                              context,
-                            ).pushReplacementNamed('/google_plataform');
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

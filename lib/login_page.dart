@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travelfile/app_theme.dart';
+import 'package:travelfile/apple_login.dart';
 import 'package:travelfile/google_login.dart';
+import 'dart:io' show Platform;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -112,6 +114,21 @@ class _LoginPageState extends State<LoginPage>
     } catch (e) {
       setState(() => _isLoading = false);
       _showErrorSnackBar('Erro ao entrar com Google');
+    }
+  }
+
+  Future<void> _handleAppleLogin() async {
+    setState(() => _isLoading = true);
+    try {
+      final user = await AppleAuthController().signInWithApple();
+      if (user != null && mounted) {
+        Navigator.of(context).pushReplacementNamed('/home');
+      } else {
+        setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      setState(() => _isLoading = false);
+      _showErrorSnackBar('Erro ao entrar com Apple');
     }
   }
 
@@ -406,6 +423,28 @@ class _LoginPageState extends State<LoginPage>
                                   ),
                                 ),
                               ),
+                              if (Platform.isIOS) ...[
+                                const SizedBox(height: 16),
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 52,
+                                  child: OutlinedButton(
+                                    onPressed: _isLoading ? null : _handleAppleLogin,
+                                    style: OutlinedButton.styleFrom(
+                                      side: BorderSide(color: Colors.grey.shade300),
+                                      foregroundColor: AppTheme.textPrimary,
+                                    ),
+                                    child: const Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.apple, size: 24),
+                                        SizedBox(width: 12),
+                                        Text('Entrar com Apple'),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ),
