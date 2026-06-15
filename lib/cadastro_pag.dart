@@ -61,17 +61,21 @@ class _CadastroPageState extends State<CadastroPage>
   bool _validate() {
     bool valid = true;
     setState(() {
-      _nomeError = _nomeController.text.trim().isEmpty ? 'Digite seu nome' : null;
-      _emailError = _emailController.text.trim().isEmpty ? 'Digite seu e-mail' : null;
-      _passwordError = _passwordController.text.length < 6
-          ? 'Mínimo de 6 caracteres'
-          : null;
-      _confirmError = _passwordController.text != _confirmPasswordController.text
-          ? 'As senhas não coincidem'
-          : null;
+      _nomeError =
+          _nomeController.text.trim().isEmpty ? 'Digite seu nome' : null;
+      _emailError =
+          _emailController.text.trim().isEmpty ? 'Digite seu e-mail' : null;
+      _passwordError =
+          _passwordController.text.length < 6 ? 'Mínimo de 6 caracteres' : null;
+      _confirmError =
+          _passwordController.text != _confirmPasswordController.text
+              ? 'As senhas não coincidem'
+              : null;
     });
-    if (_nomeError != null || _emailError != null ||
-        _passwordError != null || _confirmError != null) {
+    if (_nomeError != null ||
+        _emailError != null ||
+        _passwordError != null ||
+        _confirmError != null) {
       valid = false;
     }
     return valid;
@@ -93,14 +97,15 @@ class _CadastroPageState extends State<CadastroPage>
           .collection('usuarios')
           .doc(credential.user!.uid)
           .set({
-        'uid': credential.user!.uid,
-        'LoginMetodo': 'Email-Senha',
-        'nome': _nomeController.text.trim(),
-        'email': _emailController.text.trim(),
-        'dataCadastro': DateTime.now(),
-        'status': 'ativo',
-        'isPremium': false,
-      });
+            'uid': credential.user!.uid,
+            'LoginMetodo': 'Email-Senha',
+            'nome': _nomeController.text.trim(),
+            'email': _emailController.text.trim(),
+            'dataCadastro': DateTime.now(),
+            'status': 'ativo',
+            'isPremium': false,
+            'isADM': false,
+          });
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('/');
         ScaffoldMessenger.of(context).showSnackBar(
@@ -151,7 +156,9 @@ class _CadastroPageState extends State<CadastroPage>
                           height: 80,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                            borderRadius: BorderRadius.circular(
+                              AppTheme.radiusMedium,
+                            ),
                             boxShadow: AppTheme.elevatedShadow,
                           ),
                           padding: const EdgeInsets.all(10),
@@ -183,8 +190,9 @@ class _CadastroPageState extends State<CadastroPage>
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius:
-                              BorderRadius.circular(AppTheme.radiusXL),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.radiusXL,
+                          ),
                           boxShadow: AppTheme.elevatedShadow,
                         ),
                         padding: const EdgeInsets.all(28),
@@ -196,7 +204,8 @@ class _CadastroPageState extends State<CadastroPage>
                               label: 'Nome completo',
                               icon: Icons.person_outline,
                               error: _nomeError,
-                              onChanged: (_) => setState(() => _nomeError = null),
+                              onChanged:
+                                  (_) => setState(() => _nomeError = null),
                             ),
                             const SizedBox(height: 16),
                             _buildField(
@@ -205,7 +214,8 @@ class _CadastroPageState extends State<CadastroPage>
                               icon: Icons.email_outlined,
                               keyboardType: TextInputType.emailAddress,
                               error: _emailError,
-                              onChanged: (_) => setState(() => _emailError = null),
+                              onChanged:
+                                  (_) => setState(() => _emailError = null),
                             ),
                             const SizedBox(height: 16),
                             _buildField(
@@ -214,11 +224,12 @@ class _CadastroPageState extends State<CadastroPage>
                               icon: Icons.lock_outline,
                               obscure: _obscurePassword,
                               error: _passwordError,
-                              onChanged: (_) =>
-                                  setState(() => _passwordError = null),
-                              toggleObscure: () => setState(
-                                () => _obscurePassword = !_obscurePassword,
-                              ),
+                              onChanged:
+                                  (_) => setState(() => _passwordError = null),
+                              toggleObscure:
+                                  () => setState(
+                                    () => _obscurePassword = !_obscurePassword,
+                                  ),
                             ),
                             const SizedBox(height: 16),
                             _buildField(
@@ -227,11 +238,12 @@ class _CadastroPageState extends State<CadastroPage>
                               icon: Icons.lock_outline,
                               obscure: _obscureConfirm,
                               error: _confirmError,
-                              onChanged: (_) =>
-                                  setState(() => _confirmError = null),
-                              toggleObscure: () => setState(
-                                () => _obscureConfirm = !_obscureConfirm,
-                              ),
+                              onChanged:
+                                  (_) => setState(() => _confirmError = null),
+                              toggleObscure:
+                                  () => setState(
+                                    () => _obscureConfirm = !_obscureConfirm,
+                                  ),
                             ),
                             const SizedBox(height: 24),
                             GradientButton(
@@ -245,8 +257,10 @@ class _CadastroPageState extends State<CadastroPage>
                               width: double.infinity,
                               height: 52,
                               child: OutlinedButton(
-                                onPressed: () => Navigator.of(context)
-                                    .pushReplacementNamed('/'),
+                                onPressed:
+                                    () => Navigator.of(
+                                      context,
+                                    ).pushReplacementNamed('/'),
                                 child: const Text('Já tenho conta'),
                               ),
                             ),
@@ -283,17 +297,18 @@ class _CadastroPageState extends State<CadastroPage>
         labelText: label,
         prefixIcon: Icon(icon, color: AppTheme.accent),
         errorText: error,
-        suffixIcon: toggleObscure != null
-            ? IconButton(
-                icon: Icon(
-                  obscure
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  color: AppTheme.textSecondary,
-                ),
-                onPressed: toggleObscure,
-              )
-            : null,
+        suffixIcon:
+            toggleObscure != null
+                ? IconButton(
+                  icon: Icon(
+                    obscure
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    color: AppTheme.textSecondary,
+                  ),
+                  onPressed: toggleObscure,
+                )
+                : null,
       ),
     );
   }
