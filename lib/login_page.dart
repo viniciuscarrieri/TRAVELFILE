@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:travelfile/app_theme.dart';
-import 'package:travelfile/apple_login.dart';
-import 'package:travelfile/google_login.dart';
+import 'package:travelfile/features/auth/presentation/auth_controller.dart';
 import 'dart:io' show Platform;
 
 class LoginPage extends StatefulWidget {
@@ -26,8 +26,6 @@ class _LoginPageState extends State<LoginPage>
   late AnimationController _animController;
   late Animation<double> _fadeAnim;
   late Animation<Offset> _slideAnim;
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -53,6 +51,8 @@ class _LoginPageState extends State<LoginPage>
   }
 
   Future<void> _handleLogin() async {
+    final authController = context.read<AuthController>();
+
     setState(() {
       _emailError = null;
       _passwordError = null;
@@ -78,11 +78,11 @@ class _LoginPageState extends State<LoginPage>
     }
 
     try {
-      final credential = await _auth.signInWithEmailAndPassword(
+      final user = await authController.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      if (credential.user != null && mounted) {
+      if (user != null && mounted) {
         Navigator.of(context).pushReplacementNamed('/home');
       }
     } on FirebaseAuthException catch (e) {
@@ -103,9 +103,11 @@ class _LoginPageState extends State<LoginPage>
   }
 
   Future<void> _handleGoogleLogin() async {
+    final authController = context.read<AuthController>();
+
     setState(() => _isLoading = true);
     try {
-      final user = await GoogleAuthController().signInWithGoogle();
+      final user = await authController.signInWithGoogle();
       if (user != null && mounted) {
         Navigator.of(context).pushReplacementNamed('/home');
       } else {
@@ -118,9 +120,11 @@ class _LoginPageState extends State<LoginPage>
   }
 
   Future<void> _handleAppleLogin() async {
+    final authController = context.read<AuthController>();
+
     setState(() => _isLoading = true);
     try {
-      final user = await AppleAuthController().signInWithApple();
+      final user = await authController.signInWithApple();
       if (user != null && mounted) {
         Navigator.of(context).pushReplacementNamed('/home');
       } else {
@@ -180,7 +184,7 @@ class _LoginPageState extends State<LoginPage>
               ElevatedButton(
                 onPressed: () async {
                   if (emailCtrl.text.trim().isNotEmpty) {
-                    await _auth.sendPasswordResetEmail(
+                    await context.read<AuthController>().sendPasswordResetEmail(
                       email: emailCtrl.text.trim(),
                     );
                     if (ctx.mounted) {
