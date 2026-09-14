@@ -77,8 +77,9 @@ class _TransladoPageState extends State<TransladoPage> {
       body: FutureBuilder<void>(
         future: _futureListar,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting)
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
+          }
           if (snapshot.hasError) {
             return const EmptyStateWidget(
               icon: Icons.cloud_off_rounded,
